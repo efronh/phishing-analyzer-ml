@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+
+# datasets (download with the steps in README)
+data/raw/
+data/processed/
+
+# trained artifacts
+*.joblib
+metrics.json

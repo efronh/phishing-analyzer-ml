@@ -1,0 +1,200 @@
+{
+  "model": {
+    "path": "model.joblib",
+    "threshold": 0.5052173975067544,
+    "meta": {
+      "data": [
+        "data/processed/kaggle.csv",
+        "data/processed/nazario_sa.csv"
+      ],
+      "n_train": 15674,
+      "classifier": "logreg",
+      "rules": true,
+      "test_metrics": {
+        "threshold": 0.5052,
+        "precision": 0.9819,
+        "recall": 0.9891,
+        "f1": 0.9855,
+        "fpr": 0.0088,
+        "confusion": {
+          "tn": 2243,
+          "fp": 20,
+          "fn": 12,
+          "tp": 1084
+        },
+        "roc_auc": 0.9994,
+        "pr_auc": 0.9988
+      },
+      "trained_at": "2026-10-01 15:13:28"
+    }
+  },
+  "n": 1932,
+  "positive": 454,
+  "overall": {
+    "phase 1: rule_based (score >= 50)": {
+      "threshold": 50.0,
+      "precision": 0.3953,
+      "recall": 0.2996,
+      "f1": 0.3409,
+      "fpr": 0.1407,
+      "confusion": {
+        "tn": 1270,
+        "fp": 208,
+        "fn": 318,
+        "tp": 136
+      },
+      "roc_auc": 0.636,
+      "pr_auc": 0.3212
+    },
+    "phase 2: ml (saved threshold)": {
+      "threshold": 0.5052,
+      "precision": 0.7772,
+      "recall": 0.9758,
+      "f1": 0.8652,
+      "fpr": 0.0859,
+      "confusion": {
+        "tn": 1351,
+        "fp": 127,
+        "fn": 11,
+        "tp": 443
+      },
+      "roc_auc": 0.9767,
+      "pr_auc": 0.8654
+    },
+    "phase 2: hybrid (score >= 50)": {
+      "threshold": 50.0,
+      "precision": 0.7774,
+      "recall": 0.9075,
+      "f1": 0.8374,
+      "fpr": 0.0798,
+      "confusion": {
+        "tn": 1360,
+        "fp": 118,
+        "fn": 42,
+        "tp": 412
+      },
+      "roc_auc": 0.9496,
+      "pr_auc": 0.7296
+    }
+  },
+  "per_source": [
+    {
+      "source": "apache_apache-announce",
+      "n": 221,
+      "label": "legit",
+      "ml_flagged": 0.2489,
+      "rules_flagged": 0.19
+    },
+    {
+      "source": "apache_flink-user",
+      "n": 274,
+      "label": "legit",
+      "ml_flagged": 0.0657,
+      "rules_flagged": 0.1533
+    },
+    {
+      "source": "apache_httpd-dev",
+      "n": 62,
+      "label": "legit",
+      "ml_flagged": 0.0,
+      "rules_flagged": 0.0161
+    },
+    {
+      "source": "apache_httpd-users",
+      "n": 88,
+      "label": "legit",
+      "ml_flagged": 0.0,
+      "rules_flagged": 0.0568
+    },
+    {
+      "source": "apache_kafka-users",
+      "n": 149,
+      "label": "legit",
+      "ml_flagged": 0.1879,
+      "rules_flagged": 0.2483
+    },
+    {
+      "source": "apache_maven-users",
+      "n": 185,
+      "label": "legit",
+      "ml_flagged": 0.0216,
+      "rules_flagged": 0.1459
+    },
+    {
+      "source": "apache_spark-user",
+      "n": 93,
+      "label": "legit",
+      "ml_flagged": 0.2151,
+      "rules_flagged": 0.1935
+    },
+    {
+      "source": "apache_tomcat-users",
+      "n": 406,
+      "label": "legit",
+      "ml_flagged": 0.0049,
+      "rules_flagged": 0.0887
+    },
+    {
+      "source": "nazario_2025",
+      "n": 454,
+      "label": "phishing",
+      "ml_flagged": 0.9758,
+      "rules_flagged": 0.2996
+    }
+  ],
+  "near_duplicate_analysis": {
+    "similarity_threshold": 0.8,
+    "near_duplicates": 4,
+    "novel": 450,
+    "ml_recall_near_duplicates": 1.0,
+    "ml_recall_novel": 0.9756,
+    "rules_recall_novel": 0.3022
+  },
+  "novel_only": {
+    "phase 1: rule_based": {
+      "threshold": 50.0,
+      "precision": 0.3953,
+      "recall": 0.3022,
+      "f1": 0.3426,
+      "fpr": 0.1407,
+      "confusion": {
+        "tn": 1270,
+        "fp": 208,
+        "fn": 314,
+        "tp": 136
+      },
+      "roc_auc": 0.6354,
+      "pr_auc": 0.3197
+    },
+    "phase 2: ml": {
+      "threshold": 0.5052,
+      "precision": 0.7756,
+      "recall": 0.9756,
+      "f1": 0.8642,
+      "fpr": 0.0859,
+      "confusion": {
+        "tn": 1351,
+        "fp": 127,
+        "fn": 11,
+        "tp": 439
+      },
+      "roc_auc": 0.9766,
+      "pr_auc": 0.8644
+    },
+    "phase 2: hybrid": {
+      "threshold": 50.0,
+      "precision": 0.7757,
+      "recall": 0.9067,
+      "f1": 0.8361,
+      "fpr": 0.0798,
+      "confusion": {
+        "tn": 1360,
+        "fp": 118,
+        "fn": 42,
+        "tp": 408
+      },
+      "roc_auc": 0.9495,
+      "pr_auc": 0.728
+    }
+  }
+}

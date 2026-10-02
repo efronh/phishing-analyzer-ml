@@ -1,0 +1,14 @@
+Subject: URGENT - Your account has been suspended
+
+Dear user,
+
+We detected unusual activity on your account. You must verify your password
+immediately or your login will be disabled.
+
+Click here to restore access:
+http://192.168.1.100/secure/login?user=admin@bank.com
+
+Also confirm at:
+https://paypa1-security.tk/verify?id=93847562938475629384756293847562
+
+Support Team

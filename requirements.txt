@@ -1,0 +1,4 @@
+# Core analyzer is stdlib only. These are needed for the ML model (train.py / --model).
+scikit-learn>=1.3
+numpy>=1.24
+joblib>=1.3

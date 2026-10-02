@@ -1,0 +1,1097 @@
+{
+  "seed": 42,
+  "datasets": {
+    "kaggle": {
+      "n": 13704,
+      "positive": 6527
+    },
+    "nazario_sa": {
+      "n": 4892,
+      "positive": 784
+    }
+  },
+  "in_domain": {
+    "rule_based (tuned threshold)": {
+      "threshold": 0.0,
+      "precision": 0.4764,
+      "recall": 1.0,
+      "f1": 0.6454,
+      "fpr": 1.0,
+      "confusion": {
+        "tn": 0,
+        "fp": 1077,
+        "fn": 0,
+        "tp": 980
+      },
+      "recall_ci": [
+        0.9961,
+        1.0
+      ],
+      "fpr_ci": [
+        0.9964,
+        1.0
+      ],
+      "precision_ci": [
+        0.4549,
+        0.498
+      ],
+      "roc_auc": 0.6475,
+      "pr_auc": 0.6127
+    },
+    "rule_based (fixed >=50)": {
+      "threshold": 50.0,
+      "precision": 0.9189,
+      "recall": 0.0347,
+      "f1": 0.0669,
+      "fpr": 0.0028,
+      "confusion": {
+        "tn": 1074,
+        "fp": 3,
+        "fn": 946,
+        "tp": 34
+      },
+      "recall_ci": [
+        0.0249,
+        0.0481
+      ],
+      "fpr_ci": [
+        0.0009,
+        0.0082
+      ],
+      "precision_ci": [
+        0.787,
+        0.972
+      ],
+      "roc_auc": 0.6475,
+      "pr_auc": 0.6127
+    },
+    "rules_only_lr": {
+      "threshold": 0.4909,
+      "precision": 0.7736,
+      "recall": 0.6102,
+      "f1": 0.6823,
+      "fpr": 0.1625,
+      "confusion": {
+        "tn": 902,
+        "fp": 175,
+        "fn": 382,
+        "tp": 598
+      },
+      "recall_ci": [
+        0.5793,
+        0.6403
+      ],
+      "fpr_ci": [
+        0.1417,
+        0.1857
+      ],
+      "precision_ci": [
+        0.7428,
+        0.8017
+      ],
+      "roc_auc": 0.7652,
+      "pr_auc": 0.789,
+      "fit_seconds": 4.7
+    },
+    "text_nb": {
+      "threshold": 0.3164,
+      "precision": 0.9671,
+      "recall": 0.9898,
+      "f1": 0.9783,
+      "fpr": 0.0306,
+      "confusion": {
+        "tn": 1044,
+        "fp": 33,
+        "fn": 10,
+        "tp": 970
+      },
+      "recall_ci": [
+        0.9813,
+        0.9944
+      ],
+      "fpr_ci": [
+        0.0219,
+        0.0427
+      ],
+      "precision_ci": [
+        0.9542,
+        0.9765
+      ],
+      "roc_auc": 0.9927,
+      "pr_auc": 0.988,
+      "fit_seconds": 16.0
+    },
+    "text_svm": {
+      "threshold": 0.0809,
+      "precision": 0.9868,
+      "recall": 0.9918,
+      "f1": 0.9893,
+      "fpr": 0.0121,
+      "confusion": {
+        "tn": 1064,
+        "fp": 13,
+        "fn": 8,
+        "tp": 972
+      },
+      "recall_ci": [
+        0.984,
+        0.9959
+      ],
+      "fpr_ci": [
+        0.0071,
+        0.0205
+      ],
+      "precision_ci": [
+        0.9776,
+        0.9923
+      ],
+      "roc_auc": 0.9995,
+      "pr_auc": 0.9994,
+      "fit_seconds": 16.3
+    },
+    "text_lr": {
+      "threshold": 0.6495,
+      "precision": 0.9918,
+      "recall": 0.9878,
+      "f1": 0.9898,
+      "fpr": 0.0074,
+      "confusion": {
+        "tn": 1069,
+        "fp": 8,
+        "fn": 12,
+        "tp": 968
+      },
+      "recall_ci": [
+        0.9787,
+        0.993
+      ],
+      "fpr_ci": [
+        0.0038,
+        0.0146
+      ],
+      "precision_ci": [
+        0.9839,
+        0.9958
+      ],
+      "roc_auc": 0.9993,
+      "pr_auc": 0.9992,
+      "fit_seconds": 16.4
+    },
+    "text+rules_svm": {
+      "threshold": 0.0637,
+      "precision": 0.9878,
+      "recall": 0.9888,
+      "f1": 0.9883,
+      "fpr": 0.0111,
+      "confusion": {
+        "tn": 1065,
+        "fp": 12,
+        "fn": 11,
+        "tp": 969
+      },
+      "recall_ci": [
+        0.98,
+        0.9937
+      ],
+      "fpr_ci": [
+        0.0064,
+        0.0194
+      ],
+      "precision_ci": [
+        0.9787,
+        0.993
+      ],
+      "roc_auc": 0.9994,
+      "pr_auc": 0.9994,
+      "fit_seconds": 19.4
+    },
+    "text+rules_lr": {
+      "threshold": 0.5622,
+      "precision": 0.9868,
+      "recall": 0.9888,
+      "f1": 0.9878,
+      "fpr": 0.0121,
+      "confusion": {
+        "tn": 1064,
+        "fp": 13,
+        "fn": 11,
+        "tp": 969
+      },
+      "recall_ci": [
+        0.98,
+        0.9937
+      ],
+      "fpr_ci": [
+        0.0071,
+        0.0205
+      ],
+      "precision_ci": [
+        0.9775,
+        0.9922
+      ],
+      "roc_auc": 0.9993,
+      "pr_auc": 0.9992,
+      "fit_seconds": 19.2
+    },
+    "hybrid (w=0.6, hand-picked)": {
+      "threshold": 33.734,
+      "precision": 0.9848,
+      "recall": 0.9898,
+      "f1": 0.9873,
+      "fpr": 0.0139,
+      "confusion": {
+        "tn": 1062,
+        "fp": 15,
+        "fn": 10,
+        "tp": 970
+      },
+      "recall_ci": [
+        0.9813,
+        0.9944
+      ],
+      "fpr_ci": [
+        0.0085,
+        0.0229
+      ],
+      "precision_ci": [
+        0.975,
+        0.9908
+      ],
+      "roc_auc": 0.997,
+      "pr_auc": 0.9919
+    },
+    "hybrid (w=1.0, tuned on val)": {
+      "threshold": 56.2234,
+      "precision": 0.9868,
+      "recall": 0.9888,
+      "f1": 0.9878,
+      "fpr": 0.0121,
+      "confusion": {
+        "tn": 1064,
+        "fp": 13,
+        "fn": 11,
+        "tp": 969
+      },
+      "recall_ci": [
+        0.98,
+        0.9937
+      ],
+      "fpr_ci": [
+        0.0071,
+        0.0205
+      ],
+      "precision_ci": [
+        0.9775,
+        0.9922
+      ],
+      "roc_auc": 0.9993,
+      "pr_auc": 0.9992
+    }
+  },
+  "hybrid_weight_tuned": 1.0,
+  "cross_validation": {
+    "folds": 5,
+    "f1_mean": 0.9888,
+    "f1_std": 0.0024,
+    "roc_auc_mean": 0.9988,
+    "roc_auc_std": 0.0005
+  },
+  "cross_dataset": {
+    "rule_based (Kaggle threshold)": {
+      "threshold": 0.0,
+      "precision": 0.1603,
+      "recall": 1.0,
+      "f1": 0.2763,
+      "fpr": 1.0,
+      "confusion": {
+        "tn": 0,
+        "fp": 4108,
+        "fn": 0,
+        "tp": 784
+      },
+      "recall_ci": [
+        0.9951,
+        1.0
+      ],
+      "fpr_ci": [
+        0.9991,
+        1.0
+      ],
+      "precision_ci": [
+        0.1502,
+        0.1708
+      ],
+      "roc_auc": 0.5739,
+      "pr_auc": 0.1892
+    },
+    "rule_based (fixed >=50)": {
+      "threshold": 50.0,
+      "precision": 0.242,
+      "recall": 0.25,
+      "f1": 0.2459,
+      "fpr": 0.1495,
+      "confusion": {
+        "tn": 3494,
+        "fp": 614,
+        "fn": 588,
+        "tp": 196
+      },
+      "recall_ci": [
+        0.221,
+        0.2815
+      ],
+      "fpr_ci": [
+        0.1389,
+        0.1607
+      ],
+      "precision_ci": [
+        0.2137,
+        0.2726
+      ],
+      "roc_auc": 0.5739,
+      "pr_auc": 0.1892
+    },
+    "rules_only_lr": {
+      "threshold": 0.4909,
+      "precision": 0.1649,
+      "recall": 0.7487,
+      "f1": 0.2703,
+      "fpr": 0.7237,
+      "confusion": {
+        "tn": 1135,
+        "fp": 2973,
+        "fn": 197,
+        "tp": 587
+      },
+      "recall_ci": [
+        0.7172,
+        0.7778
+      ],
+      "fpr_ci": [
+        0.7098,
+        0.7372
+      ],
+      "precision_ci": [
+        0.1531,
+        0.1774
+      ],
+      "roc_auc": 0.6354,
+      "pr_auc": 0.3442
+    },
+    "text_nb": {
+      "threshold": 0.3164,
+      "precision": 0.1684,
+      "recall": 0.9694,
+      "f1": 0.287,
+      "fpr": 0.9136,
+      "confusion": {
+        "tn": 355,
+        "fp": 3753,
+        "fn": 24,
+        "tp": 760
+      },
+      "recall_ci": [
+        0.9549,
+        0.9793
+      ],
+      "fpr_ci": [
+        0.9046,
+        0.9218
+      ],
+      "precision_ci": [
+        0.1578,
+        0.1796
+      ],
+      "roc_auc": 0.4034,
+      "pr_auc": 0.1233
+    },
+    "text_svm": {
+      "threshold": 0.0809,
+      "precision": 0.3619,
+      "recall": 0.764,
+      "f1": 0.4912,
+      "fpr": 0.2571,
+      "confusion": {
+        "tn": 3052,
+        "fp": 1056,
+        "fn": 185,
+        "tp": 599
+      },
+      "recall_ci": [
+        0.7331,
+        0.7924
+      ],
+      "fpr_ci": [
+        0.2439,
+        0.2706
+      ],
+      "precision_ci": [
+        0.3391,
+        0.3854
+      ],
+      "roc_auc": 0.8209,
+      "pr_auc": 0.508
+    },
+    "text_lr": {
+      "threshold": 0.6495,
+      "precision": 0.3649,
+      "recall": 0.7411,
+      "f1": 0.4891,
+      "fpr": 0.2461,
+      "confusion": {
+        "tn": 3097,
+        "fp": 1011,
+        "fn": 203,
+        "tp": 581
+      },
+      "recall_ci": [
+        0.7093,
+        0.7705
+      ],
+      "fpr_ci": [
+        0.2332,
+        0.2595
+      ],
+      "precision_ci": [
+        0.3417,
+        0.3889
+      ],
+      "roc_auc": 0.8159,
+      "pr_auc": 0.4989
+    },
+    "text+rules_svm": {
+      "threshold": 0.0637,
+      "precision": 0.2404,
+      "recall": 0.4694,
+      "f1": 0.3179,
+      "fpr": 0.2831,
+      "confusion": {
+        "tn": 2945,
+        "fp": 1163,
+        "fn": 416,
+        "tp": 368
+      },
+      "recall_ci": [
+        0.4347,
+        0.5044
+      ],
+      "fpr_ci": [
+        0.2695,
+        0.2971
+      ],
+      "precision_ci": [
+        0.2196,
+        0.2624
+      ],
+      "roc_auc": 0.614,
+      "pr_auc": 0.265
+    },
+    "text+rules_lr": {
+      "threshold": 0.5622,
+      "precision": 0.2544,
+      "recall": 0.6071,
+      "f1": 0.3586,
+      "fpr": 0.3396,
+      "confusion": {
+        "tn": 2713,
+        "fp": 1395,
+        "fn": 308,
+        "tp": 476
+      },
+      "recall_ci": [
+        0.5725,
+        0.6407
+      ],
+      "fpr_ci": [
+        0.3253,
+        0.3542
+      ],
+      "precision_ci": [
+        0.2352,
+        0.2746
+      ],
+      "roc_auc": 0.6824,
+      "pr_auc": 0.2992
+    },
+    "hybrid (w=0.6, hand-picked)": {
+      "threshold": 33.734,
+      "precision": 0.2243,
+      "recall": 0.7474,
+      "f1": 0.3451,
+      "fpr": 0.4932,
+      "confusion": {
+        "tn": 2082,
+        "fp": 2026,
+        "fn": 198,
+        "tp": 586
+      },
+      "recall_ci": [
+        0.7159,
+        0.7766
+      ],
+      "fpr_ci": [
+        0.4779,
+        0.5085
+      ],
+      "precision_ci": [
+        0.2088,
+        0.2407
+      ],
+      "roc_auc": 0.6773,
+      "pr_auc": 0.2532
+    },
+    "hybrid (w=1.0, tuned on val)": {
+      "threshold": 56.2234,
+      "precision": 0.2544,
+      "recall": 0.6071,
+      "f1": 0.3586,
+      "fpr": 0.3396,
+      "confusion": {
+        "tn": 2713,
+        "fp": 1395,
+        "fn": 308,
+        "tp": 476
+      },
+      "recall_ci": [
+        0.5725,
+        0.6407
+      ],
+      "fpr_ci": [
+        0.3253,
+        0.3542
+      ],
+      "precision_ci": [
+        0.2352,
+        0.2746
+      ],
+      "roc_auc": 0.6824,
+      "pr_auc": 0.2992
+    }
+  },
+  "domain_adaptation": {
+    "rule_based": {
+      "threshold": 31.0,
+      "precision": 0.2536,
+      "recall": 0.4923,
+      "f1": 0.3348,
+      "fpr": 0.2765,
+      "confusion": {
+        "tn": 1486,
+        "fp": 568,
+        "fn": 199,
+        "tp": 193
+      },
+      "recall_ci": [
+        0.4432,
+        0.5417
+      ],
+      "fpr_ci": [
+        0.2576,
+        0.2963
+      ],
+      "precision_ci": [
+        0.224,
+        0.2857
+      ],
+      "roc_auc": 0.5767,
+      "pr_auc": 0.19
+    },
+    "Kaggle only": {
+      "threshold": 0.2996,
+      "precision": 0.2215,
+      "recall": 0.8163,
+      "f1": 0.3484,
+      "fpr": 0.5477,
+      "confusion": {
+        "tn": 929,
+        "fp": 1125,
+        "fn": 72,
+        "tp": 320
+      },
+      "recall_ci": [
+        0.775,
+        0.8515
+      ],
+      "fpr_ci": [
+        0.5261,
+        0.5691
+      ],
+      "precision_ci": [
+        0.2008,
+        0.2436
+      ],
+      "roc_auc": 0.7059,
+      "pr_auc": 0.3312
+    },
+    "Nazario+SA half only": {
+      "threshold": 0.4777,
+      "precision": 0.9869,
+      "recall": 0.9643,
+      "f1": 0.9755,
+      "fpr": 0.0024,
+      "confusion": {
+        "tn": 2049,
+        "fp": 5,
+        "fn": 14,
+        "tp": 378
+      },
+      "recall_ci": [
+        0.941,
+        0.9786
+      ],
+      "fpr_ci": [
+        0.001,
+        0.0057
+      ],
+      "precision_ci": [
+        0.9698,
+        0.9944
+      ],
+      "roc_auc": 0.9927,
+      "pr_auc": 0.9862
+    },
+    "Kaggle + Nazario+SA half": {
+      "threshold": 0.8112,
+      "precision": 0.976,
+      "recall": 0.9337,
+      "f1": 0.9544,
+      "fpr": 0.0044,
+      "confusion": {
+        "tn": 2045,
+        "fp": 9,
+        "fn": 26,
+        "tp": 366
+      },
+      "recall_ci": [
+        0.9046,
+        0.9543
+      ],
+      "fpr_ci": [
+        0.0023,
+        0.0083
+      ],
+      "precision_ci": [
+        0.955,
+        0.9873
+      ],
+      "roc_auc": 0.9972,
+      "pr_auc": 0.99
+    }
+  },
+  "turkish": {
+    "rule_based (tuned threshold)": {
+      "threshold": 0.0,
+      "precision": 0.4975,
+      "recall": 1.0,
+      "f1": 0.6645,
+      "fpr": 1.0,
+      "confusion": {
+        "tn": 0,
+        "fp": 102,
+        "fn": 0,
+        "tp": 101
+      },
+      "recall_ci": [
+        0.9634,
+        1.0
+      ],
+      "fpr_ci": [
+        0.9637,
+        1.0
+      ],
+      "precision_ci": [
+        0.4294,
+        0.5657
+      ],
+      "roc_auc": 0.505,
+      "pr_auc": 0.5025
+    },
+    "text_nb": {
+      "threshold": 0.0306,
+      "precision": 0.8099,
+      "recall": 0.9703,
+      "f1": 0.8829,
+      "fpr": 0.2255,
+      "confusion": {
+        "tn": 79,
+        "fp": 23,
+        "fn": 3,
+        "tp": 98
+      },
+      "recall_ci": [
+        0.9163,
+        0.9898
+      ],
+      "fpr_ci": [
+        0.1552,
+        0.3157
+      ],
+      "precision_ci": [
+        0.7309,
+        0.8699
+      ],
+      "roc_auc": 0.9695,
+      "pr_auc": 0.9691
+    },
+    "text_lr": {
+      "threshold": 0.512,
+      "precision": 0.9231,
+      "recall": 0.9505,
+      "f1": 0.9366,
+      "fpr": 0.0784,
+      "confusion": {
+        "tn": 94,
+        "fp": 8,
+        "fn": 5,
+        "tp": 96
+      },
+      "recall_ci": [
+        0.8893,
+        0.9787
+      ],
+      "fpr_ci": [
+        0.0403,
+        0.1472
+      ],
+      "precision_ci": [
+        0.8555,
+        0.9605
+      ],
+      "roc_auc": 0.9744,
+      "pr_auc": 0.9747
+    },
+    "text+rules_lr": {
+      "threshold": 0.5426,
+      "precision": 0.9314,
+      "recall": 0.9406,
+      "f1": 0.936,
+      "fpr": 0.0686,
+      "confusion": {
+        "tn": 95,
+        "fp": 7,
+        "fn": 6,
+        "tp": 95
+      },
+      "recall_ci": [
+        0.8764,
+        0.9725
+      ],
+      "fpr_ci": [
+        0.0336,
+        0.1349
+      ],
+      "precision_ci": [
+        0.8651,
+        0.9664
+      ],
+      "roc_auc": 0.9717,
+      "pr_auc": 0.9697
+    }
+  },
+  "turkish_rule_coverage": 0.0049,
+  "top_features": {
+    "phishing": [
+      [
+        "word__your",
+        3.6954914902804292
+      ],
+      [
+        "word__2005",
+        3.5671105493142923
+      ],
+      [
+        "word__mobile",
+        3.1789230118938665
+      ],
+      [
+        "word__no",
+        2.7737716194792292
+      ],
+      [
+        "word__http",
+        2.6973304587625626
+      ],
+      [
+        "word__here",
+        2.678845882516887
+      ],
+      [
+        "word__email",
+        2.6387430252504944
+      ],
+      [
+        "word__man",
+        2.628861200703241
+      ],
+      [
+        "word__2004",
+        2.5591080696173334
+      ],
+      [
+        "word__you",
+        2.454820141655363
+      ],
+      [
+        "word__free",
+        2.368507045769951
+      ],
+      [
+        "word__site",
+        2.3050901149861986
+      ],
+      [
+        "char__ med",
+        2.0626912242142272
+      ],
+      [
+        "word__net",
+        2.0484743355819464
+      ],
+      [
+        "char__your",
+        1.965627587909982
+      ],
+      [
+        "word__click here",
+        1.957799676924307
+      ],
+      [
+        "word__our",
+        1.9527402635677582
+      ],
+      [
+        "char__ your",
+        1.935919915078334
+      ],
+      [
+        "char__ %",
+        1.9343975802493583
+      ],
+      [
+        "char__% ",
+        1.9281678231677806
+      ]
+    ],
+    "legit": [
+      [
+        "word__enron",
+        -5.7909655595692655
+      ],
+      [
+        "word__vince",
+        -3.6960234356380113
+      ],
+      [
+        "word__thanks",
+        -3.473701750698378
+      ],
+      [
+        "word__the",
+        -3.454832593458751
+      ],
+      [
+        "char__ enr",
+        -3.047482504301495
+      ],
+      [
+        "char__enr",
+        -3.037187635067902
+      ],
+      [
+        "char__nron",
+        -3.013713996474832
+      ],
+      [
+        "char__enron",
+        -3.013713996474832
+      ],
+      [
+        "word__louise",
+        -2.9939650632043278
+      ],
+      [
+        "char__nro",
+        -2.98904427319622
+      ],
+      [
+        "char__ enro",
+        -2.9867490567796735
+      ],
+      [
+        "char__enro",
+        -2.9820335458485423
+      ],
+      [
+        "word__2000",
+        -2.940214946204924
+      ],
+      [
+        "char__nron ",
+        -2.9280264215609093
+      ],
+      [
+        "char__nr",
+        -2.7320373905467172
+      ],
+      [
+        "word__language",
+        -2.730769506400762
+      ],
+      [
+        "word__edu",
+        -2.695261310814181
+      ],
+      [
+        "word__2001",
+        -2.6795734076595434
+      ],
+      [
+        "char__ron ",
+        -2.6685745778550847
+      ],
+      [
+        "word__on",
+        -2.6654007327259435
+      ]
+    ]
+  },
+  "errors": {
+    "kaggle_test_false_positives": [
+      {
+        "score": 0.9774,
+        "text": "Subject: (none) [body: 1778 chars, 0 links]"
+      },
+      {
+        "score": 0.9694,
+        "text": "Subject: (none) [body: 2068 chars, 0 links]"
+      },
+      {
+        "score": 0.9322,
+        "text": "Subject: (none) [body: 305 chars, 0 links]"
+      },
+      {
+        "score": 0.8482,
+        "text": "Subject: (none) [body: 3605 chars, 1 links]"
+      },
+      {
+        "score": 0.7527,
+        "text": "Subject: (none) [body: 44 chars, 0 links]"
+      },
+      {
+        "score": 0.6887,
+        "text": "Subject: (none) [body: 1005 chars, 0 links]"
+      },
+      {
+        "score": 0.6766,
+        "text": "Subject: (none) [body: 28 chars, 0 links]"
+      },
+      {
+        "score": 0.6473,
+        "text": "Subject: (none) [body: 578 chars, 0 links]"
+      }
+    ],
+    "kaggle_test_false_negatives": [
+      {
+        "score": 0.0814,
+        "text": "Subject: (none) [body: 614 chars, 0 links]"
+      },
+      {
+        "score": 0.2536,
+        "text": "Subject: (none) [body: 99 chars, 0 links]"
+      },
+      {
+        "score": 0.3657,
+        "text": "Subject: (none) [body: 1927 chars, 0 links]"
+      },
+      {
+        "score": 0.3697,
+        "text": "Subject: (none) [body: 354 chars, 0 links]"
+      },
+      {
+        "score": 0.3915,
+        "text": "Subject: (none) [body: 598 chars, 0 links]"
+      },
+      {
+        "score": 0.438,
+        "text": "Subject: (none) [body: 3048 chars, 0 links]"
+      },
+      {
+        "score": 0.4759,
+        "text": "Subject: (none) [body: 9024 chars, 0 links]"
+      },
+      {
+        "score": 0.4866,
+        "text": "Subject: (none) [body: 71 chars, 0 links]"
+      }
+    ],
+    "nazario_missed_phishing": [
+      {
+        "score": 0.0007,
+        "text": "Subject: Annual-Leave-Compliance-Report-2024 [body: 647 chars, 1 links]"
+      },
+      {
+        "score": 0.0008,
+        "text": "Subject: Updated-Staffs-Information/Employee.xls 08/29/2024 01:22:52 am [body: 956 chars, 1 links]"
+      },
+      {
+        "score": 0.0009,
+        "text": "Subject: Updated-Staffs-Information/Employee.xls 09/04/2024 09:11:34 pm [body: 958 chars, 1 links]"
+      },
+      {
+        "score": 0.003,
+        "text": "Subject: Fwd:  Incoming Fax Notification at 6/5/2024 . [body: 687 chars, 1 links]"
+      },
+      {
+        "score": 0.0033,
+        "text": "Subject: Fwd:  Incoming Fax Notification at 6/3/2024 . [body: 684 chars, 1 links]"
+      },
+      {
+        "score": 0.0072,
+        "text": "Subject: Salary Upgrade for  Staff [body: 360 chars, 1 links]"
+      },
+      {
+        "score": 0.0075,
+        "text": "Subject: Scanned Docu: Contract Agreement For  id:Grg2eWNY_ [body: 235 chars, 1 links]"
+      },
+      {
+        "score": 0.0075,
+        "text": "Subject: إشعار بقرب انتهاء كلمة المرور [body: 480 chars, 2 links]"
+      }
+    ],
+    "spamassassin_false_alarms": [
+      {
+        "score": 1.0,
+        "text": "Subject: Back to School with Buy4Now [body: 4506 chars, 21 links]"
+      },
+      {
+        "score": 1.0,
+        "text": "Subject: BUG REVIEW [body: 6880 chars, 15 links]"
+      },
+      {
+        "score": 1.0,
+        "text": "Subject: Personal Finance: Resolutions You Can Keep [body: 6977 chars, 24 links]"
+      },
+      {
+        "score": 1.0,
+        "text": "Subject: Movies to Watch on Lifetime [body: 7049 chars, 20 links]"
+      },
+      {
+        "score": 0.9999,
+        "text": "Subject: Outer Where? Right here, at dELiAs*cOm! [body: 556 chars, 2 links]"
+      },
+      {
+        "score": 0.9998,
+        "text": "Subject: updated weblogs from blo.gs [body: 19962 chars, 364 links]"
+      },
+      {
+        "score": 0.9998,
+        "text": "Subject: CuteFTP Pro 3.0 Released! [body: 2722 chars, 3 links]"
+      },
+      {
+        "score": 0.9996,
+        "text": "Subject: Announcing the New Netscape 7.0 - The Fastest Netscape Browser Ever [body: 1316 chars, 4 links]"
+      }
+    ]
+  },
+  "runtime_seconds": 296.4
+}

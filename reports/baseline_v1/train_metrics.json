@@ -1,0 +1,32 @@
+{
+  "rule_based": {
+    "threshold": 0.0,
+    "precision": 0.3263,
+    "recall": 1.0,
+    "f1": 0.492,
+    "fpr": 1.0,
+    "confusion": {
+      "tn": 0,
+      "fp": 2263,
+      "fn": 0,
+      "tp": 1096
+    },
+    "roc_auc": 0.4588,
+    "pr_auc": 0.3051
+  },
+  "ml": {
+    "threshold": 0.5052,
+    "precision": 0.9819,
+    "recall": 0.9891,
+    "f1": 0.9855,
+    "fpr": 0.0088,
+    "confusion": {
+      "tn": 2243,
+      "fp": 20,
+      "fn": 12,
+      "tp": 1084
+    },
+    "roc_auc": 0.9994,
+    "pr_auc": 0.9988
+  }
+}

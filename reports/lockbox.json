@@ -1,0 +1,151 @@
+{
+  "model": {
+    "path": "model.joblib",
+    "sha256": "46feebe4735c0082b6a5b29ffd2dd7d2465d0775994e023889a0dd4518606b40",
+    "threshold": 0.519,
+    "trained_at": "2026-10-02 15:11:59",
+    "n_train": 21506
+  },
+  "counts": {
+    "pot_samples": 1000,
+    "pot_english": 466,
+    "dropped_near_copies_of_training": 0,
+    "phishing": 457,
+    "legit": 562
+  },
+  "overall": {
+    "phase 1: rule_based (score >= 50)": {
+      "threshold": 50.0,
+      "precision": 0.8143,
+      "recall": 0.4223,
+      "f1": 0.5562,
+      "fpr": 0.0783,
+      "confusion": {
+        "tn": 518,
+        "fp": 44,
+        "fn": 264,
+        "tp": 193
+      },
+      "recall_ci": [
+        0.3779,
+        0.4681
+      ],
+      "fpr_ci": [
+        0.0588,
+        0.1035
+      ],
+      "precision_ci": [
+        0.76,
+        0.8587
+      ],
+      "roc_auc": 0.7978,
+      "pr_auc": 0.7567
+    },
+    "phase 2: ml (saved threshold)": {
+      "threshold": 0.519,
+      "precision": 0.9933,
+      "recall": 0.9694,
+      "f1": 0.9812,
+      "fpr": 0.0053,
+      "confusion": {
+        "tn": 559,
+        "fp": 3,
+        "fn": 14,
+        "tp": 443
+      },
+      "recall_ci": [
+        0.9492,
+        0.9817
+      ],
+      "fpr_ci": [
+        0.0018,
+        0.0156
+      ],
+      "precision_ci": [
+        0.9804,
+        0.9977
+      ],
+      "roc_auc": 0.9987,
+      "pr_auc": 0.9986
+    }
+  },
+  "per_source": [
+    {
+      "source": "isc-bind-users",
+      "n": 146,
+      "label": "legit",
+      "ml_flagged": 0.0068,
+      "rules_flagged": 0.0959
+    },
+    {
+      "source": "mailman-users",
+      "n": 191,
+      "label": "legit",
+      "ml_flagged": 0.0052,
+      "rules_flagged": 0.0785
+    },
+    {
+      "source": "phishing_pot_older",
+      "n": 457,
+      "label": "phishing",
+      "ml_flagged": 0.9694,
+      "rules_flagged": 0.4223
+    },
+    {
+      "source": "samba-samba",
+      "n": 225,
+      "label": "legit",
+      "ml_flagged": 0.0044,
+      "rules_flagged": 0.0667
+    }
+  ],
+  "missed_phishing": [
+    {
+      "score": 0.0022,
+      "text": "Subject: [john-users] Re: SNMPv3 format [body: 819 chars, 2 links]"
+    },
+    {
+      "score": 0.068,
+      "text": "Subject: CoinTracker Desktop \u2014 A New Standard for Crypto Clarity & Security [body: 2519 chars, 1 links]"
+    },
+    {
+      "score": 0.1033,
+      "text": "Subject: You have an updated user agreement [body: 18 chars, 0 links]"
+    },
+    {
+      "score": 0.2566,
+      "text": "Subject: [Monronee] Login Details [body: 264 chars, 3 links]"
+    },
+    {
+      "score": 0.3246,
+      "text": "Subject: Important: New Rabby Desktop Upgrade [body: 1524 chars, 1 links]"
+    },
+    {
+      "score": 0.3259,
+      "text": "Subject: Hello [body: 70 chars, 0 links]"
+    },
+    {
+      "score": 0.3545,
+      "text": "Subject: Give the Gift of Comfort This Season \ud83c\udf81\ud83d\udec1 [body: 656 chars, 3 links]"
+    },
+    {
+      "score": 0.4048,
+      "text": "Subject: Discover Lido V2 Platform [body: 448 chars, 0 links]"
+    }
+  ],
+  "false_alarms": [
+    {
+      "score": 0.8807,
+      "text": "Subject: Named issues with T-Mobile 5G for Business [body: 9315 chars, 0 links]"
+    },
+    {
+      "score": 0.8516,
+      "text": "Subject: [Samba] GPLv3 Samba Compliance Issue: Innuos Zen mini (Innuos v3.4.4) [body: 2278 chars, 2 links]"
+    },
+    {
+      "score": 0.7042,
+      "text": "Subject: [MM3-users] Re: broken route to accounts [body: 3478 chars, 5 links]"
+    }
+  ],
+  "forced_rerun": false
+}
