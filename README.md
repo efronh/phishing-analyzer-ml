@@ -277,10 +277,15 @@ Top ML signals:
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
 | `test_*.py` | 54 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.
 
 **Privacy:** the reports never include email bodies. Error examples show only the subject line, with email addresses and links masked, plus the body length and link count. The mailing-list archives used here are public, but their authors did not sign up to appear in this repository.
+
+## License
+
+The code is MIT-licensed ([`LICENSE`](LICENSE)). No email data or trained model is included. Each dataset keeps its own license: Nazario is CC BY 4.0, Phishing Pot is CC BY-NC 4.0 (used only for testing), and the Kaggle mirror is LGPL-3.0. See [`DATA_LICENSES.md`](DATA_LICENSES.md) for the full list and attributions.
 
 ## Next steps
 
