@@ -19,6 +19,7 @@ step "recall study";               $PY experiments_recall.py
 if [ "${1:-}" = "--with-tuning" ]; then
   step "hyperparameter search";    $PY experiments_tuning.py
 fi
+step "URL feature study";        $PY experiments_url.py
 step "train production model";     $PY train.py
 step "evaluate on hold-outs";      $PY evaluate_holdout.py
 step "threshold stability";        $PY threshold_stability.py

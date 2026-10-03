@@ -123,6 +123,35 @@ Two fixes were compared on **hold-out C**, built for this step from two sources 
 
 Full tables: [`reports/RECALL.md`](reports/RECALL.md).
 
+## URL features: a tie, so the model stays as it is
+
+TF-IDF replaces every link with one token, so the model sees what a link looks like only through the rule features. Eight bounded URL features were tested:
+
+- a link on free hosting (IPFS, r2.dev, web.app and so on)
+- a redirect parameter that contains another URL
+- percent-encoding
+- hyphens in the host
+- subdomain depth
+- a brand name on someone else's domain
+- punycode
+- the number of distinct domains
+
+They were chosen from training sources only. The decision rule was committed before the first run ([protocol](reports/URL_FEATURES_PROTOCOL.md)).
+
+| | Fold F1 (grouped 5-fold CV) | A false alarms | B false alarms | C recall |
+|---|---:|---:|---:|---:|
+| **v3 (production)** | 0.9846 | 1.5% | 1.4% | 93.0% |
+| v4 (+ URL features) | 0.9845 | 1.4% | 1.4% | 93.5% |
+
+- **The rule kept v3.** The mean paired fold-F1 change is −0.0002, with a standard error of 0.0004. No hold-out difference is significant (McNemar p ≥ 0.69).
+- **Why there is no gain:**
+  - Most of the phishing the model still misses has no link at all.
+  - The rule features already cover the strongest link signals: IP links, shorteners, `@` in a URL, suspicious TLDs.
+- **The signals are real, but rare in this data:** 32% of Nazario phishing with a link uses free hosting, against 0.4–1.8% of legitimate mail. That pattern is already learned, through text and rule features, well enough.
+- **Blind spot:** commercial mail uses click trackers and free hosting much more often. Its false-alarm rate is untested here, so this is not evidence that URL features are useless in a real inbox.
+
+Full tables: [`reports/URL_FEATURES.md`](reports/URL_FEATURES.md).
+
 ## A stable threshold
 
 A single 15% validation split gave a threshold that moved a lot from one training seed to the next.
@@ -285,13 +314,14 @@ Top ML signals:
 | `experiments.py` | Model comparison, CV, cross-dataset, domain adaptation, Turkish → `reports/RESULTS.md` |
 | `experiments_false_alarms.py` | False-alarm study → `reports/FALSE_ALARMS.md` |
 | `experiments_recall.py` | Recall study → `reports/RECALL.md` |
+| `experiments_url.py` | URL feature comparison (v3 vs v4, pre-registered rule) → `reports/URL_FEATURES.md` |
 | `experiments_tuning.py` | Near-duplicate effect + hyperparameter search → `reports/TUNING.md` |
 | `train.py` | Trains, evaluates and saves the production model |
 | `evaluate_holdout.py` | Tests the saved model on hold-outs A, B and C → `reports/HOLDOUT_2025.md` |
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 56 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 57 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.
@@ -305,7 +335,7 @@ The code is MIT-licensed ([`LICENSE`](LICENSE)). No email data or trained model 
 ## Next steps
 
 - Attachment names and types as features. Many of the missed lures say "see attached".
-- Link text vs. link target mismatch, and header signals (SPF/DKIM/DMARC results, Reply-To mismatch).
+- HTML signals (link text vs. link target, forms, hidden text), once there is legitimate HTML mail to train and test on: in the current data 98% of phishing has HTML and almost no legitimate email does, so any HTML feature would learn the source. Header signals (SPF/DKIM/DMARC results, Reply-To mismatch).
 - A transformer baseline (DistilBERT) to compare against TF-IDF on the hold-outs.
 - Robustness tests: invisible characters, homoglyphs, `hxxp` / `[.]` link obfuscation.
 - An ablation without Kaggle, since finding 4 suggests it may hurt.
