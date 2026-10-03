@@ -164,6 +164,66 @@ def compute_metrics(y_true, scores, threshold):
     return m
 
 
+# gerçek gelen kutusunda (provider filtrelerinden sonra) phishing payı - test setleri %22-33
+REAL_PREVALENCES = (0.001, 0.01, 0.05)
+
+
+def precision_at_prevalence(confusion, prevalence, n_samples=20000, seed=0):
+    """Test setindeki recall ve yanlış alarm oranı, phishing payı `prevalence` olan bir
+    gelen kutusunda hangi precision'a karşılık gelir? (Bayes: TPR*pi / (TPR*pi + FPR*(1-pi)))
+    Aralık: recall ve FPR için Jeffreys Beta posteriorundan örnekleme (0 yanlış alarmda da tanımlı)."""
+    tp, fn, fp, tn = confusion["tp"], confusion["fn"], confusion["fp"], confusion["tn"]
+    pi = prevalence
+
+    def ppv(tpr, fpr):
+        return tpr * pi / np.maximum(tpr * pi + fpr * (1 - pi), 1e-300)
+
+    rng = np.random.default_rng(seed)
+    tpr = rng.beta(tp + 0.5, fn + 0.5, n_samples)
+    fpr = rng.beta(fp + 0.5, tn + 0.5, n_samples)
+    lo, hi = np.percentile(ppv(tpr, fpr), [2.5, 97.5])
+    point = ppv(tp / max(tp + fn, 1), fp / max(fp + tn, 1))
+    return {"prevalence": pi, "precision": round(float(point), 4),
+            "precision_ci": [round(float(lo), 4), round(float(hi), 4)]}
+
+
+def pr_auc_at_prevalence(y_true, scores, prevalence):
+    """PR-AUC de test setinin phishing payına bağlı. Meşru mailleri yeniden ağırlıklandırıp
+    payı `prevalence`'a çekerek, aynı skorların o gelen kutusundaki PR-AUC'sini hesaplar."""
+    y = np.asarray(y_true)
+    pos, neg = int(y.sum()), int(len(y) - y.sum())
+    w_neg = (1 - prevalence) / prevalence * pos / neg
+    weights = np.where(y == 1, 1.0, w_neg)
+    return round(float(average_precision_score(y, scores, sample_weight=weights)), 4)
+
+
+def prevalence_rows(y_true, scores, threshold, prevalences=REAL_PREVALENCES):
+    """Rapor için: her gerçekçi phishing payında precision (aralıklı) ve PR-AUC."""
+    m = compute_metrics(y_true, scores, threshold)
+    out = []
+    for pi in prevalences:
+        r = precision_at_prevalence(m["confusion"], pi)
+        r["pr_auc"] = pr_auc_at_prevalence(y_true, scores, pi)
+        out.append(r)
+    return out
+
+
+def format_prevalence_table(named_rows):
+    """named_rows: [(set adı, test payı, test PR-AUC, prevalence_rows)] -> markdown."""
+    pis = [r["prevalence"] for r in named_rows[0][3]]
+    head = "| set | test mix: PR-AUC | " + " | ".join(
+        "%g%% phishing: precision (95%% int.) / PR-AUC" % (100 * p) for p in pis) + " |"
+    out = [head, "|---|---:|" + "---:|" * len(pis)]
+    for name, share, test_pr_auc, rows in named_rows:
+        cells = ["%.1f%% (%.1f–%.1f) / %s" % (100 * r["precision"], 100 * r["precision_ci"][0],
+                                             100 * r["precision_ci"][1],
+                                             "-" if r.get("pr_auc") is None else "%.3f" % r["pr_auc"])
+                 for r in rows]
+        out.append("| %s (%.0f%% phishing) | %.4f | " % (name, 100 * share, test_pr_auc)
+                   + " | ".join(cells) + " |")
+    return "\n".join(out)
+
+
 def format_table(rows, columns):
     """rows: [(name, metrics_dict)] -> markdown tablo."""
     out = ["| model | " + " | ".join(columns) + " |"]

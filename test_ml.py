@@ -284,6 +284,31 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(wilson_ci(0, 0), [None, None])
         self.assertEqual(wilson_ci(0, 10)[0], 0.0)
 
+    def test_precision_at_prevalence(self):
+        from evaluation import precision_at_prevalence
+        conf = {"tp": 99, "fn": 1, "fp": 1, "tn": 99}
+        r = precision_at_prevalence(conf, 0.5)
+        self.assertAlmostEqual(r["precision"], 0.99, places=3)
+        # TPR 0.99, FPR 0.01, %1 phishing -> 0.0099 / (0.0099 + 0.0099) = 0.5
+        r = precision_at_prevalence(conf, 0.01)
+        self.assertAlmostEqual(r["precision"], 0.5, places=3)
+        self.assertLess(r["precision_ci"][0], 0.5)
+        self.assertGreater(r["precision_ci"][1], 0.5)
+        # sıfır yanlış alarmda da aralık tanımlı ve 1'in altında
+        r = precision_at_prevalence({"tp": 50, "fn": 0, "fp": 0, "tn": 50}, 0.01)
+        self.assertLess(r["precision_ci"][0], 1.0)
+
+    def test_pr_auc_at_prevalence(self):
+        from sklearn.metrics import average_precision_score
+        import numpy as np
+        from evaluation import pr_auc_at_prevalence
+        y = np.array([1, 1, 0, 1, 0, 0, 0, 0])
+        s = np.array([0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])
+        # test setinin kendi payında ağırlıksız PR-AUC ile aynı
+        self.assertAlmostEqual(pr_auc_at_prevalence(y, s, y.mean()),
+                               average_precision_score(y, s), places=4)
+        self.assertLess(pr_auc_at_prevalence(y, s, 0.01), average_precision_score(y, s))
+
     def test_mcnemar_exact(self):
         from evaluation import mcnemar_exact
         y = [1] * 20

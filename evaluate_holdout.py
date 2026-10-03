@@ -17,7 +17,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from analyzer import PhishingEmailAnalyzer
-from evaluation import compute_metrics, describe_email, format_table, format_table_ci, load_csv
+from evaluation import (compute_metrics, describe_email, format_prevalence_table, format_table,
+                        format_table_ci, load_csv, prevalence_rows)
 from ml_model import PhishingClassifier
 
 DATA = os.path.join("data", "processed")
@@ -72,6 +73,8 @@ def main():
         ("phase 1: rule_based (score >= 50)", compute_metrics(y, rules, RULE_THRESHOLD)),
         ("phase 2: ml (saved threshold)", compute_metrics(y, ml, model.threshold)),
     ]
+    # gerçekçi phishing paylarında precision için her setin (y, skor) çifti
+    prevalence_sets = [("A", y.copy(), ml.copy())]
 
     # B: aynı Nazario 2025 phishing + Ubuntu meşru mailleri (farklı kurum)
     overall_b = []
@@ -88,6 +91,7 @@ def main():
             ("phase 2: ml (saved threshold)",
              compute_metrics(yb, np.concatenate([ml[p_idx], ml_b]), model.threshold)),
         ]
+        prevalence_sets.append(("B", yb, np.concatenate([ml[p_idx], ml_b])))
         # tablo ve hata örnekleri için B'nin meşru maillerini de ekle (C ayrı tutuluyor)
         X = X + Xb
         y = np.concatenate([y, np.zeros(len(Xb), dtype=int)])
@@ -122,6 +126,7 @@ def main():
             ("phase 1: rule_based (score >= 50)", compute_metrics(yc, rules_c, RULE_THRESHOLD)),
             ("phase 2: ml (saved threshold)", compute_metrics(yc, ml_c, model.threshold)),
         ]
+        prevalence_sets.append(("C", yc, ml_c))
         sc = np.array(sc)
         for src in sorted(set(sc.tolist())):
             m = sc == src
@@ -179,6 +184,10 @@ def main():
         "per_source": per_source,
         "near_duplicate_analysis": near_dup,
         "novel_only": dict(strict),
+        "prevalence": [{"set": name, "test_share": round(float(ys.mean()), 4),
+                        "test_pr_auc": compute_metrics(ys, ss, model.threshold)["pr_auc"],
+                        "rows": prevalence_rows(ys, ss, model.threshold)}
+                       for name, ys, ss in prevalence_sets],
         "errors": {
             "missed_phishing": examples(X, ml, missed),
             "false_alarms": examples(X, ml, false_alarms),
@@ -265,6 +274,22 @@ def write_markdown(r, overall, strict, overall_b, overall_c):
             for e in items:
                 L.append("- **" + "%.3f" % e["score"] + "** " + e["text"].replace("|", "\\|"))
             L.append("")
+    L.append("## Precision in a real inbox")
+    L.append("")
+    L.append("The hold-outs are 22–33% phishing; a real inbox after the provider's filters is far "
+             "below that. Recall and the false-alarm rate do not depend on the phishing share, but "
+             "precision and PR-AUC do. Precision below is what the measured recall and false-alarm "
+             "rate (same threshold) imply at each share: TPR·π / (TPR·π + FPR·(1−π)). The 95% "
+             "interval samples recall and FPR from their Jeffreys posteriors. PR-AUC re-weights "
+             "the legitimate emails to the target share, so it ranks the same scores in that inbox.")
+    L.append("")
+    L.append(format_prevalence_table([(p["set"], p["test_share"], p["test_pr_auc"], p["rows"])
+                                      for p in r["prevalence"]]))
+    L.append("")
+    L.append("Caveats: this assumes the hold-out's legitimate mail is representative of the inbox's "
+             "legitimate mail (it is all mailing lists), and the false-alarm rate rests on 3–22 "
+             "errors, so the intervals are wide.")
+    L.append("")
     L.append("## Excluding repeats of known campaigns")
     L.append("")
     L.append(str(nd["near_duplicates"]) + " of the " + str(r["positive"]) + " phishing emails are "

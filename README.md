@@ -54,7 +54,22 @@ The errors match the patterns seen on the hold-outs:
 
 Full report: [`reports/LOCKBOX.md`](reports/LOCKBOX.md).
 
-**What these numbers mean in a real inbox.** The hold-out sets are 22–33% phishing, while a real inbox, after the provider's filters, is usually well under 1%. When phishing is that rare, even a 1.4% false-alarm rate means most alerts are false: at 1% phishing, only about 2 alerts in 5 are real. This text-only model would be one layer of a mail filter, not the whole filter.
+**What these numbers mean in a real inbox.** The test sets are 22–33% phishing; a real inbox, after the provider's filters, is usually well under 1%. Recall and the false-alarm rate don't depend on that share, but precision (the share of alerts that are real) does. The table shows the precision implied by the measured recall and false-alarm rate, at the same threshold, for different phishing shares:
+
+| Set | Precision on the test set | 0.1% phishing | 1% phishing | 5% phishing |
+|---|---:|---:|---:|---:|
+| A | 95.3% | 6.2% (4.3–9.3) | 40.2% (31.2–50.9) | 77.8% (70.3–84.4) |
+| B | 97.2% | 6.5% (4.1–11.1) | 41.4% (29.9–55.8) | 78.6% (69.0–86.8) |
+| C | 98.5% | 19.2% (8.2–45.5) | 70.6% (47.3–89.4) | 92.6% (82.4–97.8) |
+| Lockbox | 99.3% | 15.4% (6.4–38.9) | 64.7% (40.8–86.5) | 90.5% (78.2–97.1) |
+
+- At 1% phishing, **only about 2 alerts in 5 are real on sets A and B.** Precision of 95–99% on the test sets says almost nothing about a real inbox.
+- The intervals are wide because the false-alarm rates rest on only 3–22 errors.
+- PR-AUC drops the same way: 0.994–0.998 on the test mix, but 0.86–0.93 once the legitimate emails are re-weighted to 0.1% phishing. Details: [`reports/HOLDOUT_2025.md`](reports/HOLDOUT_2025.md#precision-in-a-real-inbox).
+- The lockbox row comes from its saved confusion counts. The lockbox model was not run again.
+- **The calibrated probability has the same limit:** it assumes 37% phishing, as in training.
+
+This text-only model would be one layer of a mail filter, not the whole filter.
 
 ## How false alarms were cut by 25×
 
@@ -276,7 +291,7 @@ Top ML signals:
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 54 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 56 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.

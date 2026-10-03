@@ -480,6 +480,110 @@
       "pr_auc": 0.9955
     }
   },
+  "prevalence": [
+    {
+      "set": "A",
+      "test_share": 0.235,
+      "test_pr_auc": 0.9956,
+      "rows": [
+        {
+          "prevalence": 0.001,
+          "precision": 0.0625,
+          "precision_ci": [
+            0.043,
+            0.0933
+          ],
+          "pr_auc": 0.8545
+        },
+        {
+          "prevalence": 0.01,
+          "precision": 0.4021,
+          "precision_ci": [
+            0.3121,
+            0.5094
+          ],
+          "pr_auc": 0.9434
+        },
+        {
+          "prevalence": 0.05,
+          "precision": 0.778,
+          "precision_ci": [
+            0.7028,
+            0.844
+          ],
+          "pr_auc": 0.982
+        }
+      ]
+    },
+    {
+      "set": "B",
+      "test_share": 0.3311,
+      "test_pr_auc": 0.9975,
+      "rows": [
+        {
+          "prevalence": 0.001,
+          "precision": 0.0654,
+          "precision_ci": [
+            0.0406,
+            0.111
+          ],
+          "pr_auc": 0.932
+        },
+        {
+          "prevalence": 0.01,
+          "precision": 0.4139,
+          "precision_ci": [
+            0.2991,
+            0.5575
+          ],
+          "pr_auc": 0.9739
+        },
+        {
+          "prevalence": 0.05,
+          "precision": 0.7863,
+          "precision_ci": [
+            0.6898,
+            0.8678
+          ],
+          "pr_auc": 0.9898
+        }
+      ]
+    },
+    {
+      "set": "C",
+      "test_share": 0.2181,
+      "test_pr_auc": 0.9939,
+      "rows": [
+        {
+          "prevalence": 0.001,
+          "precision": 0.1922,
+          "precision_ci": [
+            0.0818,
+            0.4551
+          ],
+          "pr_auc": 0.9116
+        },
+        {
+          "prevalence": 0.01,
+          "precision": 0.706,
+          "precision_ci": [
+            0.4733,
+            0.8939
+          ],
+          "pr_auc": 0.9549
+        },
+        {
+          "prevalence": 0.05,
+          "precision": 0.926,
+          "precision_ci": [
+            0.824,
+            0.9777
+          ],
+          "pr_auc": 0.9801
+        }
+      ]
+    }
+  ],
   "errors": {
     "missed_phishing": [
       {
