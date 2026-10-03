@@ -74,6 +74,28 @@ class TestFeatures(unittest.TestCase):
         # v3 = v2 + lure feature'ları, v2 kısmı aynı kalmalı
         self.assertEqual(extract_features(lure, version=3)[:len(FEATURE_NAMES)], extract_features(lure))
 
+    def test_url_features(self):
+        from features import (URL_FEATURE_NAMES, _url_features, brand_in_foreign_domain, feature_names,
+                              is_free_hosting, registered_domain)
+        self.assertEqual(len(extract_features("x", version=4)), len(feature_names(4)))
+        self.assertEqual(_url_features("no links here"), [0.0] * len(URL_FEATURE_NAMES))
+        f = dict(zip(URL_FEATURE_NAMES, _url_features(
+            "http://paypal.com.secure-login.xyz/a?next=https%3A%2F%2Fx.com https://bafy.ipfs.dweb.link/x")))
+        self.assertEqual(f["url_free_hosting_fraction"], 0.5)
+        self.assertEqual(f["url_redirect_param"], 1.0)
+        self.assertEqual(f["url_brand_in_foreign_domain"], 1.0)
+        self.assertEqual(registered_domain("www.amazon.co.uk"), "amazon.co.uk")
+        self.assertTrue(is_free_hosting("bucket.s3.us-east-2.amazonaws.com"))
+        self.assertFalse(is_free_hosting("docs.python.org"))
+        # marka kendi domain'inde, ya da başka kelimenin içinde ("purchase" -> "chase") sayılmaz
+        for host in ["login.microsoftonline.com", "acme-my.sharepoint.com", "purchase.example.com"]:
+            self.assertFalse(brand_in_foreign_domain(host), host)
+        self.assertTrue(brand_in_foreign_domain("apple-id-verify.com"))
+        # sınırlı: 40 farklı linkli duyuru da hep [0, 1] aralığında (sayı hariç, o log)
+        many = " ".join("https://a-b-c-d-e-f.x.y.z.site%d.org/p" % i for i in range(40))
+        vals = _url_features(many)[:-1]
+        self.assertTrue(all(0.0 <= v <= 1.0 for v in vals))
+
     def test_preprocess_drops_subject_label_keeps_words(self):
         from ml_model import preprocess
         out = preprocess("Subject: URGENT invoice\n\nThis is subject to change.")

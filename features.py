@@ -13,6 +13,8 @@ import math
 import re
 from functools import lru_cache
 
+from urllib.parse import urlparse
+
 from analyzer import PhishingEmailAnalyzer, URL_REGEX, is_valid_ip, host_is_shortener
 
 FEATURE_NAMES = [
@@ -82,11 +84,128 @@ _LURE_REGEXES = [re.compile(p, re.IGNORECASE) for p in LURE_PATTERNS.values()]
 SHORT_BODY_CHARS = 300
 
 
+# v4: v3 + URL'nin kendisine bakan feature'lar. TF-IDF'te URL'ler tek bir URLTOKEN'a
+# dönüşüyor, yani model linkin neye benzediğini sadece buradan görüyor. Seçim sadece eğitim
+# kaynaklarına bakılarak yapıldı (bkz. reports/URL_FEATURES_PROTOCOL.md). .php/.asp linkleri
+# bilerek yok: oranı phishing'den çok mailin yılını gösteriyordu (2002 ham %9, 2024 ham %1).
+#
+# Herkesin domain sahibi olmadan servisin kendi domain'inde sayfa / ham dosya yayınlayabildiği
+# yerler. Listedeki host'lar veride geçtiği için değil bu tanıma uyduğu için var; meşru
+# projelerin de kullandıkları dahil (github.io, netlify.app, s3).
+FREE_HOSTING = [
+    "ipfs.io", "dweb.link", "cloudflare-ipfs.com", "w3s.link", "nftstorage.link", "fleek.co",
+    "r2.dev", "pages.dev", "workers.dev", "web.app", "firebaseapp.com", "appspot.com",
+    "firebasestorage.googleapis.com", "storage.googleapis.com", "s3.amazonaws.com",
+    "blob.core.windows.net", "web.core.windows.net", "azurewebsites.net",
+    "glitch.me", "netlify.app", "vercel.app", "herokuapp.com", "onrender.com", "surge.sh",
+    "github.io", "gitlab.io", "repl.co", "replit.app", "ngrok.io", "ngrok-free.app",
+    "trycloudflare.com", "weebly.com", "wixsite.com", "000webhostapp.com", "blogspot.com",
+    "wordpress.com", "sites.google.com", "webflow.io", "framer.app", "square.site",
+    "godaddysites.com", "mystrikingly.com", "carrd.co", "notion.site",
+]
+# s3-eu-west-1.amazonaws.com, bucket.s3.us-east-2.amazonaws.com gibi bölgesel adresler
+S3_REGIONAL = re.compile(r"(^|\.)s3[.-][a-z0-9-]+\.amazonaws\.com$")
+
+# taklit edilen markalar -> markanın kendi domain'leri. Host'u "." ve "-" ile token'lara
+# bölüp bakıyoruz ("purchase" içindeki "chase" sayılmasın diye substring değil).
+BRANDS = {
+    "paypal": ["paypal.com"], "apple": ["apple.com", "icloud.com"],
+    "icloud": ["icloud.com", "apple.com"],
+    "microsoft": ["microsoft.com", "microsoftonline.com", "live.com", "sharepoint.com", "office.com"],
+    "office365": ["office.com", "office365.com", "microsoft.com"],
+    "outlook": ["outlook.com", "live.com", "office.com"], "onedrive": ["onedrive.com", "live.com"],
+    "sharepoint": ["sharepoint.com"], "amazon": ["amazonaws.com"], "netflix": ["netflix.com"],
+    "docusign": ["docusign.com", "docusign.net"], "dhl": ["dhl.com", "dhl.de"],
+    "fedex": ["fedex.com"], "usps": ["usps.com"], "wellsfargo": ["wellsfargo.com"],
+    "chase": ["chase.com"], "adobe": ["adobe.com"], "dropbox": ["dropbox.com"],
+    "wetransfer": ["wetransfer.com"], "linkedin": ["linkedin.com"],
+    "facebook": ["facebook.com", "fb.com"], "instagram": ["instagram.com"],
+    "google": ["googleapis.com", "googleusercontent.com", "gstatic.com"],
+    "coinbase": ["coinbase.com"], "metamask": ["metamask.io"], "binance": ["binance.com"],
+}
+# co.uk, com.br gibi ikinci seviye uzantılar: kayıtlı domain son 3 etiket
+_SECOND_LEVEL = {"co", "com", "net", "org", "gov", "ac", "edu", "ne", "or"}
+_REDIRECT_RE = re.compile(r"[?&][^=&#]*=(https?(:|%3a)|www\.)", re.IGNORECASE)
+_PCT_RE = re.compile(r"%[0-9a-f]{2}", re.IGNORECASE)
+_HOST_TOKENS = re.compile(r"[.-]")
+
+URL_FEATURE_NAMES = [
+    "url_free_hosting_fraction",
+    "url_redirect_param",
+    "url_pct_encoded",
+    "url_max_host_hyphens",
+    "url_max_subdomain_depth",
+    "url_brand_in_foreign_domain",
+    "url_punycode",
+    "url_distinct_domains_log",
+]
+FEATURE_NAMES_V4 = FEATURE_NAMES_V3 + URL_FEATURE_NAMES
+
+
+def registered_domain(host):
+    """Yaklaşık kayıtlı domain (Public Suffix List yok): "a.b.paypal.com" -> "paypal.com",
+    "x.amazon.co.uk" -> "amazon.co.uk"."""
+    parts = [p for p in host.lower().strip(".").split(".") if p]
+    if len(parts) >= 3 and len(parts[-1]) == 2 and parts[-2] in _SECOND_LEVEL:
+        return ".".join(parts[-3:])
+    return ".".join(parts[-2:])
+
+
+def is_free_hosting(host):
+    host = host.lower()
+    if S3_REGIONAL.search(host):
+        return True
+    return any(host == d or host.endswith("." + d) for d in FREE_HOSTING)
+
+
+def brand_in_foreign_domain(host):
+    """Host'ta bir marka adı geçiyor ama kayıtlı domain o markanın değil:
+    "paypal.com.secure-login.xyz", "microsoft-verify.net"."""
+    reg = registered_domain(host)
+    reg_label = reg.split(".")[0]
+    tokens = set(_HOST_TOKENS.split(host.lower()))
+    for brand, owned in BRANDS.items():
+        if brand in tokens and reg_label != brand and reg not in owned:
+            return True
+    return False
+
+
+def _url_features(text):
+    urls = []
+    for raw in URL_REGEX.findall(text):
+        url = raw.rstrip(".,;:!?)")
+        try:
+            host = (urlparse(url).hostname or "").lower()
+        except ValueError:
+            host = ""
+        if host and not is_valid_ip(host):
+            urls.append((url, host))
+    if not urls:
+        return [0.0] * len(URL_FEATURE_NAMES)
+    hosts = set(h for _, h in urls)
+    domains = set(registered_domain(h) for h in hosts)
+    # kayıtlı domain'in üstündeki etiket sayısı ("a.b.example.com" -> 2), 4'te kesiliyor
+    depth = max(max(0, h.count(".") - r.count(".")) for h in hosts for r in [registered_domain(h)])
+    hyphens = max(h.count("-") for h in hosts)
+    return [
+        sum(1 for h in hosts if is_free_hosting(h)) / len(hosts),
+        1.0 if any(_REDIRECT_RE.search(u) for u, _ in urls) else 0.0,
+        1.0 if any(_PCT_RE.search(u) for u, _ in urls) else 0.0,
+        min(hyphens, 4) / 4.0,
+        min(depth, 4) / 4.0,
+        1.0 if any(brand_in_foreign_domain(h) for h in hosts) else 0.0,
+        1.0 if any("xn--" in h for h in hosts) else 0.0,
+        _log1p(len(domains)),
+    ]
+
+
 def feature_names(version=2):
     if version == 1:
         return FEATURE_NAMES_V1
     if version == 3:
         return FEATURE_NAMES_V3
+    if version == 4:
+        return FEATURE_NAMES_V4
     return FEATURE_NAMES
 
 
@@ -99,6 +218,8 @@ def extract_features(text, analyzer=None, version=2):
         return _compute_features_v1(text, analyzer)
     if version == 3:
         return _compute_features(text, analyzer) + _lure_features(text)
+    if version == 4:
+        return _compute_features(text, analyzer) + _lure_features(text) + _url_features(text)
     return _compute_features(text, analyzer)
 
 
@@ -108,6 +229,8 @@ def _cached_features(text, version):
         return tuple(_compute_features_v1(text, _DEFAULT_ANALYZER))
     if version == 3:
         return _cached_features(text, 2) + tuple(_lure_features(text))
+    if version == 4:
+        return _cached_features(text, 3) + tuple(_url_features(text))
     return tuple(_compute_features(text, _DEFAULT_ANALYZER))
 
 
