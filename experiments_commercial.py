@@ -342,11 +342,15 @@ def write_markdown(r):
     L.append("")
     L.append("## 2. False alarms of the model")
     L.append("")
+    L.append("Naming: `v3`/`v4` in the JSON are **feature-set** numbers (`feature_version` 3 and 4), not the model "
+             "versions of the README. Feature set 3 is the production model (README: v4+lure); feature set 4 adds "
+             "the URL features.")
+    L.append("")
     L.append("Every email here is legitimate, so each phishing verdict is a false alarm. The model was "
              "trained on English only: the non-English rows measure a language shift as much as "
              "commercial mail, and are not a fair false-alarm rate.")
     L.append("")
-    L.append("| subset | emails | v3 (production) | v4 (+ URL features) | McNemar p |")
+    L.append("| subset | emails | production (v4+lure) | production + URL features | McNemar p |")
     L.append("|---|---:|---:|---:|---:|")
     for subset, row in r["false_alarms"].items():
         cells = []

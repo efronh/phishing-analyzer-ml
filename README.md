@@ -140,10 +140,10 @@ They were chosen from training sources only. The decision rule was committed bef
 
 | | Fold F1 (grouped 5-fold CV) | A false alarms | B false alarms | C recall |
 |---|---:|---:|---:|---:|
-| **v3 (production)** | 0.9846 | 1.5% | 1.4% | 93.0% |
-| v4 (+ URL features) | 0.9845 | 1.4% | 1.4% | 93.5% |
+| **production model (v4+lure)** | 0.9846 | 1.5% | 1.4% | 93.0% |
+| + URL features | 0.9845 | 1.4% | 1.4% | 93.5% |
 
-- **The rule kept v3.** The mean paired fold-F1 change is −0.0002, with a standard error of 0.0004. No hold-out difference is significant (McNemar p ≥ 0.69).
+- **The rule kept the production model.** The mean paired fold-F1 change is −0.0002, with a standard error of 0.0004. No hold-out difference is significant (McNemar p ≥ 0.69).
 - **Why there is no gain:**
   - Most of the phishing the model still misses has no link at all.
   - The rule features already cover the strongest link signals: IP links, shorteners, `@` in a URL, suspicious TLDs.
@@ -314,7 +314,7 @@ Top ML signals:
 | `experiments.py` | Model comparison, CV, cross-dataset, domain adaptation, Turkish → `reports/RESULTS.md` |
 | `experiments_false_alarms.py` | False-alarm study → `reports/FALSE_ALARMS.md` |
 | `experiments_recall.py` | Recall study → `reports/RECALL.md` |
-| `experiments_url.py` | URL feature comparison (v3 vs v4, pre-registered rule) → `reports/URL_FEATURES.md` |
+| `experiments_url.py` | URL feature comparison (production vs + URL, pre-registered rule) → `reports/URL_FEATURES.md` |
 | `experiments_tuning.py` | Near-duplicate effect + hyperparameter search → `reports/TUNING.md` |
 | `train.py` | Trains, evaluates and saves the production model |
 | `evaluate_holdout.py` | Tests the saved model on hold-outs A, B and C → `reports/HOLDOUT_2025.md` |
