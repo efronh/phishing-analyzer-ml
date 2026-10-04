@@ -29,6 +29,7 @@ Brackets show 95% confidence intervals.
 - **False alarms: 8.6–24.9% (v1) → 0.4–1.5%.**
 - **Stable across retraining:** over 5 training seeds, recall on 2025 Nazario phishing stays within 98.9–99.1% and false alarms on set A within 1.6–2.3% (see [below](#a-stable-threshold)).
 - **What it still gets wrong:** the remaining false alarms are mostly one-line "Unsubscribe" emails that users send to a list by mistake, plus a few project announcements. The missed phishing is mostly short, link-free lures and phishing disguised as a product newsletter. Some Phishing Pot samples are plain marketing spam, so its labels are partly noisy.
+- **But not on commercial mail:** on the author's own promotional emails, **88% of English promotions are flagged as phishing** (see [below](#commercial-mail-the-blind-spot)). Every legitimate test set above is a mailing list, so these false-alarm rates hold for that kind of mail only.
 - **The lockbox test confirms it** (see [below](#lockbox-test-one-time-blind-evaluation)): 96.9% recall at 0.5% false alarms on emails and organizations never used during development.
 
 These are the CLI's own decisions (see [How it works](#how-it-works)). Details by source and example errors: [`reports/HOLDOUT_2025.md`](reports/HOLDOUT_2025.md).
@@ -70,6 +71,42 @@ Full report: [`reports/LOCKBOX.md`](reports/LOCKBOX.md).
 - **The calibrated probability has the same limit:** it assumes 37% phishing, as in training.
 
 This text-only model would be one layer of a mail filter, not the whole filter.
+
+## Commercial mail: the blind spot
+
+Every legitimate test email above comes from open-source mailing lists. The first test on commercial mail shows that the low false-alarm rate does not carry over.
+
+**Data.** The set is 674 promotional emails (newsletters and campaigns) from the author's own inbox.
+- 45 sender domains, at most 30 emails per sender; 169 of the emails are English.
+- **Private:** the emails are not published, so this result cannot be reproduced from the repository.
+- **Masking:** before scoring, the author's name and addresses, every recipient address (in plain, URL-encoded and base64 form), and phone and card numbers were removed.
+- **Report:** it holds counts only, with no subjects, senders or bodies.
+
+The rules were committed before the run ([protocol](reports/COMMERCIAL_PROTOCOL.md)).
+
+| | Emails | Flagged as phishing (every one is a false alarm) |
+|---|---:|---:|
+| English promotions | 169 | **87.6%** (81.8–91.7) |
+| Other languages (mostly Turkish) | 505 | 94.7% (92.3–96.3) |
+| For comparison: hold-out A's mailing lists | 1,478 | 1.5% (1.0–2.2) |
+
+- **Why (exploratory, found after the result):** the text features put promotional mail on the phishing side.
+  - The mean word + character contribution is **+2.4** for English promotions, against −7.4 for the 2024 mailing lists in training and +5.5 for Kaggle "phishing".
+  - The words that push hardest are marketing language: "your", "email", "unsubscribe", "this email".
+  - The cause: no legitimate training email is marketing, and Kaggle's "phishing" class is mostly bulk spam ([finding 2](#key-findings)). So the model learned "marketing = phishing".
+- **Not a language effect:** English promotions are flagged almost as often as Turkish ones.
+- **The URL features don't fix it:** 91.8% instead of 92.9% (McNemar p = 0.17).
+- **HTML signals, measured on the same mail:** none passes the pre-registered rule (at least 5% of training phishing and at least 3× the rate on promotions).
+  - Hidden text, for example, is in 75% of promotions (newsletter preview lines) and 7% of phishing.
+  - Only free-hosting links pass: 19% of phishing, 0% of promotions.
+- **Limits:**
+  - One inbox, 45 senders, mostly Turkish brands.
+  - The comparison phishing is older (2019–2024).
+  - "Legitimate" relies on the Promotions category plus a junk filter (iCloud routed the email to the inbox and it passes DMARC).
+
+**What it means:** as it stands, the model behaves more like a bulk-mail detector than a phishing detector. Fixing that is the next step.
+
+Full tables: [`reports/COMMERCIAL.md`](reports/COMMERCIAL.md).
 
 ## How false alarms were cut by 25×
 
@@ -148,7 +185,7 @@ They were chosen from training sources only. The decision rule was committed bef
   - Most of the phishing the model still misses has no link at all.
   - The rule features already cover the strongest link signals: IP links, shorteners, `@` in a URL, suspicious TLDs.
 - **The signals are real, but rare in this data:** 32% of Nazario phishing with a link uses free hosting, against 0.4–1.8% of legitimate mail. That pattern is already learned, through text and rule features, well enough.
-- **Blind spot:** commercial mail uses click trackers and free hosting much more often. Its false-alarm rate is untested here, so this is not evidence that URL features are useless in a real inbox.
+- **Commercial mail:** the URL features were also tested on promotional mail ([below](#commercial-mail-the-blind-spot)). They lower the false-alarm rate there only from 92.9% to 91.8%; the problem is the text, not the links.
 
 Full tables: [`reports/URL_FEATURES.md`](reports/URL_FEATURES.md).
 
@@ -266,7 +303,8 @@ What `prepare_data.py` does:
 
 **Known limitations**
 
-- **All legitimate test email comes from open-source mailing lists.** Commercial mail (newsletters, receipts, bank notices) is not covered, because no public dataset of recent commercial mail exists. The false-alarm rate on that kind of mail, and the risk from the lure features, is unknown.
+- **All public legitimate test email comes from open-source mailing lists.** No public dataset of recent commercial mail exists. The one commercial test (the author's private promotions) shows **88–95% false alarms**. Receipts, bank notices and business email are still untested, and so is the risk from the lure features.
+- **The commercial test is private and narrow:** one inbox, 45 senders, mostly Turkish. It cannot be reproduced from this repository.
 - **Hold-out sets hold a few hundred phishing emails each.** Differences of 1–2 points are within noise; read the confidence intervals.
 - **The hold-outs were not blind every time.** A and B were measured at every step; C's errors were inspected after the recall study. Rules were fixed in advance at each step, and the lockbox (evaluated once, at the end) exists for exactly this reason.
 - **The lockbox reuses a hold-out source.** Its phishing comes from the same source as hold-out C (Phishing Pot), though the emails themselves are new. Its legitimate emails come from three organizations used nowhere else.
@@ -281,6 +319,7 @@ pip install -r requirements.txt
 ./download_data.sh            # all datasets, ~330 MB on disk in data/raw/
 ./run_all.sh                  # every report + the production model, same code and data (~45 min)
 python evaluate_lockbox.py    # one-time lockbox test (already run; refuses to run again)
+python experiments_commercial.py  # needs your own Mail export in data/raw/own_promo/ (see the protocol)
 
 python main.py samples/suspicious_sample.txt --no-dns                       # rules only
 python main.py samples/suspicious_sample.txt --no-dns --model model.joblib  # + ML
@@ -314,6 +353,8 @@ Top ML signals:
 | `experiments.py` | Model comparison, CV, cross-dataset, domain adaptation, Turkish → `reports/RESULTS.md` |
 | `experiments_false_alarms.py` | False-alarm study → `reports/FALSE_ALARMS.md` |
 | `experiments_recall.py` | Recall study → `reports/RECALL.md` |
+| `html_signals.py` | Language-independent HTML signals (forms, hidden text, link text vs. target). Measured, not used by the model |
+| `experiments_commercial.py` | Commercial-mail test on private data → `reports/COMMERCIAL.md` (not in `run_all.sh`) |
 | `experiments_url.py` | URL feature comparison (production vs + URL, pre-registered rule) → `reports/URL_FEATURES.md` |
 | `experiments_tuning.py` | Near-duplicate effect + hyperparameter search → `reports/TUNING.md` |
 | `train.py` | Trains, evaluates and saves the production model |
@@ -321,7 +362,7 @@ Top ML signals:
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 57 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 60 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.
@@ -334,8 +375,8 @@ The code is MIT-licensed ([`LICENSE`](LICENSE)). No email data or trained model 
 
 ## Next steps
 
+- **Fix the commercial false alarms first.** Options: train without Kaggle (finding 4 already suggests it may hurt), separate Kaggle's bulk spam from real phishing, and add legitimate marketing mail to training, tested on different senders.
 - Attachment names and types as features. Many of the missed lures say "see attached".
 - HTML signals (link text vs. link target, forms, hidden text), once there is legitimate HTML mail to train and test on: in the current data 98% of phishing has HTML and almost no legitimate email does, so any HTML feature would learn the source. Header signals (SPF/DKIM/DMARC results, Reply-To mismatch).
 - A transformer baseline (DistilBERT) to compare against TF-IDF on the hold-outs.
 - Robustness tests: invisible characters, homoglyphs, `hxxp` / `[.]` link obfuscation.
-- An ablation without Kaggle, since finding 4 suggests it may hurt.

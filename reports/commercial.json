@@ -1,0 +1,950 @@
+{
+  "counts": {
+    "dropped_by_junk_filter": 11,
+    "messages_read": 3641,
+    "after_dedup": 1597,
+    "senders": 45,
+    "after_sender_cap": 674
+  },
+  "redaction_terms": 4,
+  "max_per_sender": 30,
+  "english": 169,
+  "signal_rates": {
+    "commercial (all)": {
+      "n": 674,
+      "has_html": {
+        "rate": 1.0,
+        "ci": [
+          0.9943,
+          1.0
+        ]
+      },
+      "html_only": {
+        "rate": 0.4214,
+        "ci": [
+          0.3846,
+          0.459
+        ]
+      },
+      "form": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "password_input": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "hidden_text": {
+        "rate": 0.7522,
+        "ci": [
+          0.7183,
+          0.7833
+        ]
+      },
+      "link_text_domain_mismatch": {
+        "rate": 0.0579,
+        "ci": [
+          0.0426,
+          0.0781
+        ]
+      },
+      "brand_text_foreign_link": {
+        "rate": 0.0178,
+        "ci": [
+          0.0102,
+          0.0309
+        ]
+      },
+      "image_heavy": {
+        "rate": 0.1691,
+        "ci": [
+          0.1427,
+          0.1993
+        ]
+      },
+      "meta_refresh": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "script_or_data_link": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "url_free_hosting_fraction": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "url_redirect_param": {
+        "rate": 0.0178,
+        "ci": [
+          0.0102,
+          0.0309
+        ]
+      },
+      "url_pct_encoded": {
+        "rate": 0.1068,
+        "ci": [
+          0.0857,
+          0.1324
+        ]
+      },
+      "url_max_host_hyphens": {
+        "rate": 0.0593,
+        "ci": [
+          0.0439,
+          0.0798
+        ]
+      },
+      "url_max_subdomain_depth": {
+        "rate": 0.9896,
+        "ci": [
+          0.9787,
+          0.995
+        ]
+      },
+      "url_brand_in_foreign_domain": {
+        "rate": 0.0208,
+        "ci": [
+          0.0124,
+          0.0346
+        ]
+      },
+      "url_punycode": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "has_link": {
+        "rate": 0.9941,
+        "ci": [
+          0.9848,
+          0.9977
+        ]
+      }
+    },
+    "commercial, HTML only": {
+      "n": 674,
+      "has_html": {
+        "rate": 1.0,
+        "ci": [
+          0.9943,
+          1.0
+        ]
+      },
+      "html_only": {
+        "rate": 0.4214,
+        "ci": [
+          0.3846,
+          0.459
+        ]
+      },
+      "form": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "password_input": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "hidden_text": {
+        "rate": 0.7522,
+        "ci": [
+          0.7183,
+          0.7833
+        ]
+      },
+      "link_text_domain_mismatch": {
+        "rate": 0.0579,
+        "ci": [
+          0.0426,
+          0.0781
+        ]
+      },
+      "brand_text_foreign_link": {
+        "rate": 0.0178,
+        "ci": [
+          0.0102,
+          0.0309
+        ]
+      },
+      "image_heavy": {
+        "rate": 0.1691,
+        "ci": [
+          0.1427,
+          0.1993
+        ]
+      },
+      "meta_refresh": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "script_or_data_link": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "url_free_hosting_fraction": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "url_redirect_param": {
+        "rate": 0.0178,
+        "ci": [
+          0.0102,
+          0.0309
+        ]
+      },
+      "url_pct_encoded": {
+        "rate": 0.1068,
+        "ci": [
+          0.0857,
+          0.1324
+        ]
+      },
+      "url_max_host_hyphens": {
+        "rate": 0.0593,
+        "ci": [
+          0.0439,
+          0.0798
+        ]
+      },
+      "url_max_subdomain_depth": {
+        "rate": 0.9896,
+        "ci": [
+          0.9787,
+          0.995
+        ]
+      },
+      "url_brand_in_foreign_domain": {
+        "rate": 0.0208,
+        "ci": [
+          0.0124,
+          0.0346
+        ]
+      },
+      "url_punycode": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0057
+        ]
+      },
+      "has_link": {
+        "rate": 0.9941,
+        "ci": [
+          0.9848,
+          0.9977
+        ]
+      }
+    },
+    "training phishing (Nazario 2019-24)": {
+      "n": 1571,
+      "has_html": {
+        "rate": 0.9784,
+        "ci": [
+          0.9699,
+          0.9845
+        ]
+      },
+      "html_only": {
+        "rate": 0.5684,
+        "ci": [
+          0.5438,
+          0.5927
+        ]
+      },
+      "form": {
+        "rate": 0.0025,
+        "ci": [
+          0.001,
+          0.0065
+        ]
+      },
+      "password_input": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0024
+        ]
+      },
+      "hidden_text": {
+        "rate": 0.0732,
+        "ci": [
+          0.0613,
+          0.0871
+        ]
+      },
+      "link_text_domain_mismatch": {
+        "rate": 0.0713,
+        "ci": [
+          0.0596,
+          0.0851
+        ]
+      },
+      "brand_text_foreign_link": {
+        "rate": 0.0516,
+        "ci": [
+          0.0417,
+          0.0636
+        ]
+      },
+      "image_heavy": {
+        "rate": 0.0637,
+        "ci": [
+          0.0526,
+          0.0768
+        ]
+      },
+      "meta_refresh": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0024
+        ]
+      },
+      "script_or_data_link": {
+        "rate": 0.0006,
+        "ci": [
+          0.0001,
+          0.0036
+        ]
+      },
+      "url_free_hosting_fraction": {
+        "rate": 0.1871,
+        "ci": [
+          0.1686,
+          0.2072
+        ]
+      },
+      "url_redirect_param": {
+        "rate": 0.0414,
+        "ci": [
+          0.0326,
+          0.0524
+        ]
+      },
+      "url_pct_encoded": {
+        "rate": 0.0605,
+        "ci": [
+          0.0497,
+          0.0734
+        ]
+      },
+      "url_max_host_hyphens": {
+        "rate": 0.17,
+        "ci": [
+          0.1522,
+          0.1893
+        ]
+      },
+      "url_max_subdomain_depth": {
+        "rate": 0.5105,
+        "ci": [
+          0.4858,
+          0.5352
+        ]
+      },
+      "url_brand_in_foreign_domain": {
+        "rate": 0.0115,
+        "ci": [
+          0.0073,
+          0.018
+        ]
+      },
+      "url_punycode": {
+        "rate": 0.0006,
+        "ci": [
+          0.0001,
+          0.0036
+        ]
+      },
+      "has_link": {
+        "rate": 0.7492,
+        "ci": [
+          0.7272,
+          0.77
+        ]
+      }
+    },
+    "training phishing, HTML only": {
+      "n": 1537,
+      "has_html": {
+        "rate": 1.0,
+        "ci": [
+          0.9975,
+          1.0
+        ]
+      },
+      "html_only": {
+        "rate": 0.581,
+        "ci": [
+          0.5562,
+          0.6054
+        ]
+      },
+      "form": {
+        "rate": 0.0026,
+        "ci": [
+          0.001,
+          0.0067
+        ]
+      },
+      "password_input": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0025
+        ]
+      },
+      "hidden_text": {
+        "rate": 0.0748,
+        "ci": [
+          0.0627,
+          0.0891
+        ]
+      },
+      "link_text_domain_mismatch": {
+        "rate": 0.0729,
+        "ci": [
+          0.0609,
+          0.087
+        ]
+      },
+      "brand_text_foreign_link": {
+        "rate": 0.0527,
+        "ci": [
+          0.0426,
+          0.065
+        ]
+      },
+      "image_heavy": {
+        "rate": 0.0651,
+        "ci": [
+          0.0538,
+          0.0785
+        ]
+      },
+      "meta_refresh": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0025
+        ]
+      },
+      "script_or_data_link": {
+        "rate": 0.0007,
+        "ci": [
+          0.0001,
+          0.0037
+        ]
+      },
+      "url_free_hosting_fraction": {
+        "rate": 0.1913,
+        "ci": [
+          0.1724,
+          0.2117
+        ]
+      },
+      "url_redirect_param": {
+        "rate": 0.0423,
+        "ci": [
+          0.0333,
+          0.0535
+        ]
+      },
+      "url_pct_encoded": {
+        "rate": 0.0618,
+        "ci": [
+          0.0508,
+          0.075
+        ]
+      },
+      "url_max_host_hyphens": {
+        "rate": 0.1737,
+        "ci": [
+          0.1556,
+          0.1935
+        ]
+      },
+      "url_max_subdomain_depth": {
+        "rate": 0.5198,
+        "ci": [
+          0.4948,
+          0.5447
+        ]
+      },
+      "url_brand_in_foreign_domain": {
+        "rate": 0.0117,
+        "ci": [
+          0.0074,
+          0.0184
+        ]
+      },
+      "url_punycode": {
+        "rate": 0.0007,
+        "ci": [
+          0.0001,
+          0.0037
+        ]
+      },
+      "has_link": {
+        "rate": 0.7619,
+        "ci": [
+          0.7399,
+          0.7825
+        ]
+      }
+    },
+    "SpamAssassin ham": {
+      "n": 4150,
+      "has_html": {
+        "rate": 0.0451,
+        "ci": [
+          0.0392,
+          0.0518
+        ]
+      },
+      "html_only": {
+        "rate": 0.0294,
+        "ci": [
+          0.0247,
+          0.035
+        ]
+      },
+      "form": {
+        "rate": 0.021,
+        "ci": [
+          0.017,
+          0.0258
+        ]
+      },
+      "password_input": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0009
+        ]
+      },
+      "hidden_text": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0009
+        ]
+      },
+      "link_text_domain_mismatch": {
+        "rate": 0.0048,
+        "ci": [
+          0.0031,
+          0.0074
+        ]
+      },
+      "brand_text_foreign_link": {
+        "rate": 0.019,
+        "ci": [
+          0.0153,
+          0.0237
+        ]
+      },
+      "image_heavy": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0009
+        ]
+      },
+      "meta_refresh": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0009
+        ]
+      },
+      "script_or_data_link": {
+        "rate": 0.0005,
+        "ci": [
+          0.0001,
+          0.0018
+        ]
+      },
+      "url_free_hosting_fraction": {
+        "rate": 0.0031,
+        "ci": [
+          0.0018,
+          0.0054
+        ]
+      },
+      "url_redirect_param": {
+        "rate": 0.0024,
+        "ci": [
+          0.0013,
+          0.0044
+        ]
+      },
+      "url_pct_encoded": {
+        "rate": 0.0111,
+        "ci": [
+          0.0083,
+          0.0148
+        ]
+      },
+      "url_max_host_hyphens": {
+        "rate": 0.0304,
+        "ci": [
+          0.0256,
+          0.036
+        ]
+      },
+      "url_max_subdomain_depth": {
+        "rate": 0.801,
+        "ci": [
+          0.7885,
+          0.8128
+        ]
+      },
+      "url_brand_in_foreign_domain": {
+        "rate": 0.0072,
+        "ci": [
+          0.0051,
+          0.0103
+        ]
+      },
+      "url_punycode": {
+        "rate": 0.0,
+        "ci": [
+          0.0,
+          0.0009
+        ]
+      },
+      "has_link": {
+        "rate": 0.8665,
+        "ci": [
+          0.8558,
+          0.8765
+        ]
+      }
+    }
+  },
+  "verdicts": {
+    "html_only": {
+      "phishing_rate": 0.581,
+      "commercial_rate": 0.4214,
+      "ratio": 1.38,
+      "promising": false
+    },
+    "form": {
+      "phishing_rate": 0.0026,
+      "commercial_rate": 0.0,
+      "ratio": 1.75,
+      "promising": false
+    },
+    "password_input": {
+      "phishing_rate": 0.0,
+      "commercial_rate": 0.0,
+      "ratio": 0.0,
+      "promising": false
+    },
+    "hidden_text": {
+      "phishing_rate": 0.0748,
+      "commercial_rate": 0.7522,
+      "ratio": 0.1,
+      "promising": false
+    },
+    "link_text_domain_mismatch": {
+      "phishing_rate": 0.0729,
+      "commercial_rate": 0.0579,
+      "ratio": 1.26,
+      "promising": false
+    },
+    "brand_text_foreign_link": {
+      "phishing_rate": 0.0527,
+      "commercial_rate": 0.0178,
+      "ratio": 2.96,
+      "promising": false
+    },
+    "image_heavy": {
+      "phishing_rate": 0.0651,
+      "commercial_rate": 0.1691,
+      "ratio": 0.38,
+      "promising": false
+    },
+    "meta_refresh": {
+      "phishing_rate": 0.0,
+      "commercial_rate": 0.0,
+      "ratio": 0.0,
+      "promising": false
+    },
+    "script_or_data_link": {
+      "phishing_rate": 0.0007,
+      "commercial_rate": 0.0,
+      "ratio": 0.47,
+      "promising": false
+    },
+    "url_free_hosting_fraction": {
+      "phishing_rate": 0.1871,
+      "commercial_rate": 0.0,
+      "ratio": 126.11,
+      "promising": true
+    },
+    "url_redirect_param": {
+      "phishing_rate": 0.0414,
+      "commercial_rate": 0.0178,
+      "ratio": 2.33,
+      "promising": false
+    },
+    "url_pct_encoded": {
+      "phishing_rate": 0.0605,
+      "commercial_rate": 0.1068,
+      "ratio": 0.57,
+      "promising": false
+    },
+    "url_max_host_hyphens": {
+      "phishing_rate": 0.17,
+      "commercial_rate": 0.0593,
+      "ratio": 2.87,
+      "promising": false
+    },
+    "url_max_subdomain_depth": {
+      "phishing_rate": 0.5105,
+      "commercial_rate": 0.9896,
+      "ratio": 0.52,
+      "promising": false
+    },
+    "url_brand_in_foreign_domain": {
+      "phishing_rate": 0.0115,
+      "commercial_rate": 0.0208,
+      "ratio": 0.55,
+      "promising": false
+    },
+    "url_punycode": {
+      "phishing_rate": 0.0006,
+      "commercial_rate": 0.0,
+      "ratio": 0.4,
+      "promising": false
+    }
+  },
+  "thresholds": {
+    "v3": 0.519,
+    "v4": 0.5385
+  },
+  "false_alarms": {
+    "English": {
+      "n": 169,
+      "v3": {
+        "false_alarms": 148,
+        "rate": 0.8757,
+        "ci": [
+          0.8175,
+          0.9173
+        ]
+      },
+      "v4": {
+        "false_alarms": 146,
+        "rate": 0.8639,
+        "ci": [
+          0.8041,
+          0.9076
+        ]
+      },
+      "mcnemar_v4_vs_v3": {
+        "only_a_correct": 2,
+        "only_b_correct": 0,
+        "p_value": 0.5
+      }
+    },
+    "not English": {
+      "n": 505,
+      "v3": {
+        "false_alarms": 478,
+        "rate": 0.9465,
+        "ci": [
+          0.9233,
+          0.963
+        ]
+      },
+      "v4": {
+        "false_alarms": 473,
+        "rate": 0.9366,
+        "ci": [
+          0.9119,
+          0.9548
+        ]
+      },
+      "mcnemar_v4_vs_v3": {
+        "only_a_correct": 11,
+        "only_b_correct": 6,
+        "p_value": 0.3323
+      }
+    },
+    "all": {
+      "n": 674,
+      "v3": {
+        "false_alarms": 626,
+        "rate": 0.9288,
+        "ci": [
+          0.9068,
+          0.9459
+        ]
+      },
+      "v4": {
+        "false_alarms": 619,
+        "rate": 0.9184,
+        "ci": [
+          0.8953,
+          0.9368
+        ]
+      },
+      "mcnemar_v4_vs_v3": {
+        "only_a_correct": 13,
+        "only_b_correct": 6,
+        "p_value": 0.1671
+      }
+    }
+  },
+  "diagnosis_exploratory": {
+    "groups": {
+      "commercial, English": {
+        "n": 169,
+        "flagged": 0.8757,
+        "median_probability": 0.9868,
+        "mean_logit_word": 0.732,
+        "mean_logit_char": 1.659,
+        "mean_logit_rules": 0.52
+      },
+      "commercial, not English": {
+        "n": 505,
+        "flagged": 0.9465,
+        "median_probability": 0.997,
+        "mean_logit_word": 0.92,
+        "mean_logit_char": 2.016,
+        "mean_logit_rules": 0.765
+      },
+      "2024 mailing lists (training, legit)": {
+        "n": 2205,
+        "flagged": 0.0,
+        "median_probability": 0.0,
+        "mean_logit_word": -3.129,
+        "mean_logit_char": -4.282,
+        "mean_logit_rules": -0.563
+      },
+      "SpamAssassin ham (training, legit)": {
+        "n": 4150,
+        "flagged": 0.0,
+        "median_probability": 0.0001,
+        "mean_logit_word": -2.684,
+        "mean_logit_char": -3.524,
+        "mean_logit_rules": -1.358
+      },
+      "Nazario 2019-24 (training, phishing)": {
+        "n": 1571,
+        "flagged": 1.0,
+        "median_probability": 0.9999,
+        "mean_logit_word": 1.723,
+        "mean_logit_char": 3.127,
+        "mean_logit_rules": 1.833
+      },
+      "Kaggle 'phishing' (training, sample of 1500)": {
+        "n": 1500,
+        "flagged": 1.0,
+        "median_probability": 0.9998,
+        "mean_logit_word": 1.668,
+        "mean_logit_char": 3.837,
+        "mean_logit_rules": 0.509
+      }
+    },
+    "top_pushes_english": [
+      {
+        "feature": "rules__has_url",
+        "mean_contribution": 1.541,
+        "share_of_emails": 0.976
+      },
+      {
+        "feature": "rules__suspicious_url_fraction",
+        "mean_contribution": 0.729,
+        "share_of_emails": 0.42
+      },
+      {
+        "feature": "rules__detail_count",
+        "mean_contribution": 0.271,
+        "share_of_emails": 0.858
+      },
+      {
+        "feature": "word__your",
+        "mean_contribution": 0.232,
+        "share_of_emails": 0.722
+      },
+      {
+        "feature": "rules__exclamation_log",
+        "mean_contribution": 0.21,
+        "share_of_emails": 0.639
+      },
+      {
+        "feature": "word__email",
+        "mean_contribution": 0.173,
+        "share_of_emails": 0.888
+      },
+      {
+        "feature": "word__you",
+        "mean_contribution": 0.108,
+        "share_of_emails": 0.592
+      },
+      {
+        "feature": "rules__max_url_issue_score",
+        "mean_contribution": 0.101,
+        "share_of_emails": 0.42
+      },
+      {
+        "feature": "word__unsubscribe",
+        "mean_contribution": 0.098,
+        "share_of_emails": 0.686
+      },
+      {
+        "feature": "rules__keyword_hits_log",
+        "mean_contribution": 0.097,
+        "share_of_emails": 0.414
+      },
+      {
+        "feature": "word__this email",
+        "mean_contribution": 0.078,
+        "share_of_emails": 0.592
+      },
+      {
+        "feature": "rules__caps_word_ratio",
+        "mean_contribution": 0.07,
+        "share_of_emails": 0.503
+      }
+    ]
+  },
+  "runtime_seconds": 188.4
+}

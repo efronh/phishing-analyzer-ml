@@ -229,6 +229,42 @@ def rates(rows):
     return out
 
 
+# teşhis listesinde bir kelime en az bu kadar mailde geçmeli: tek bir gönderen (en fazla 30 mail)
+# İngilizce alt kümenin %18'ini oluşturabiliyor, %25 eşiği marka adlarının listeye girmesini önler
+DIAG_MIN_DOC_FREQ = 0.25
+
+
+def diagnose(model, groups):
+    """Sonuç görüldükten SONRA eklenen keşif analizi (protokolde yok): kararı kelime, harf grubu
+    ve kural blokları ne kadar itiyor; reklamlarda en çok iten feature'lar hangileri."""
+    pipe = model.pipeline
+    union = pipe.named_steps["features"]
+    coef = pipe.named_steps["clf"].coef_.ravel()
+    names = union.get_feature_names_out()
+    blocks = {b: np.array([n.startswith(b + "__") for n in names]) for b in ["word", "char", "rules"]}
+    out = {"groups": {}}
+    for name, texts in groups.items():
+        F = union.transform(texts)
+        p = model.predict_proba(texts)
+        row = {"n": len(texts), "flagged": round(float((p >= model.threshold).mean()), 4),
+               "median_probability": round(float(np.median(p)), 4)}
+        for b, mask in blocks.items():
+            idx = np.where(mask)[0]
+            row["mean_logit_" + b] = round(float(np.asarray(F[:, idx].multiply(coef[mask]).sum(axis=1)).mean()), 3)
+        out["groups"][name] = row
+    E = groups["commercial, English"]
+    F = union.transform(E)
+    mask = blocks["word"] | blocks["rules"]
+    Fm = F[:, np.where(mask)[0]].tocsc()
+    cm, nm = coef[mask], names[mask]
+    df = np.asarray((Fm > 0).mean(axis=0)).ravel()
+    mean_c = np.asarray(Fm.multiply(cm).mean(axis=0)).ravel()
+    top = [i for i in np.argsort(-mean_c) if df[i] >= DIAG_MIN_DOC_FREQ][:12]
+    out["top_pushes_english"] = [{"feature": str(nm[i]), "mean_contribution": round(float(mean_c[i]), 3),
+                                  "share_of_emails": round(float(df[i]), 3)} for i in top]
+    return out
+
+
 def main():
     if not promo_mbox_paths():
         print("No finished .mbox export in " + PROMO_DIR, file=sys.stderr)
@@ -286,9 +322,24 @@ def main():
         row["mcnemar_v4_vs_v3"] = mc
         false_alarms[subset] = row
 
+    log("diagnosis (exploratory)")
+    Xm, _, _ = load_csv(os.path.join("data", "processed", "modern_legit.csv"))
+    Xk, yk, _ = load_csv(os.path.join("data", "processed", "kaggle.csv"))
+    rng = random.Random(SEED)
+    kaggle_phish = rng.sample([t for t, l in zip(Xk, yk) if l == 1], 1500)
+    diagnosis = diagnose(v3, {
+        "commercial, English": [t for t, e in zip(X, english) if e],
+        "commercial, not English": [t for t, e in zip(X, english) if not e],
+        "2024 mailing lists (training, legit)": Xm,
+        "SpamAssassin ham (training, legit)": [r["text"] for r in ham],
+        "Nazario 2019-24 (training, phishing)": [r["text"] for r in phish],
+        "Kaggle 'phishing' (training, sample of 1500)": kaggle_phish,
+    })
+
     results = {"counts": counts, "redaction_terms": n_terms, "max_per_sender": MAX_PER_SENDER,
                "english": int(english.sum()), "signal_rates": signal_rates, "verdicts": verdicts,
                "thresholds": {"v3": v3.threshold, "v4": v4.threshold}, "false_alarms": false_alarms,
+               "diagnosis_exploratory": diagnosis,
                "runtime_seconds": round(time.time() - started, 1)}
     os.makedirs(REPORTS, exist_ok=True)
     f = open(os.path.join(REPORTS, "commercial.json"), "w", encoding="utf-8")
@@ -362,6 +413,30 @@ def write_markdown(r):
         L.append("| %s | %d | %s | %s | %s |" % (subset, row["n"], cells[0], cells[1],
                                                  "-" if p is None else "%.3g" % p))
     L.append("")
+    dg = r.get("diagnosis_exploratory")
+    if dg:
+        L.append("## 3. Why (exploratory, added after seeing the result)")
+        L.append("")
+        L.append("Not in the protocol: added once the false-alarm rate was known, to find its cause. The "
+                 "production model's score is a sum of word, character n-gram and rule-feature contributions "
+                 "(plus an intercept). Negative pushes toward legitimate, positive toward phishing.")
+        L.append("")
+        L.append("| group | emails | flagged | median P(phishing) | words | char n-grams | rule features |")
+        L.append("|---|---:|---:|---:|---:|---:|---:|")
+        for g, x in dg["groups"].items():
+            L.append("| %s | %d | %s | %.3f | %+.2f | %+.2f | %+.2f |" % (
+                g, x["n"], pct(x["flagged"]), x["median_probability"], x["mean_logit_word"],
+                x["mean_logit_char"], x["mean_logit_rules"]))
+        L.append("")
+        L.append("Features that push English promotions toward phishing the most, among features present in at "
+                 "least %d%% of them (no single sender can reach that share, so no brand name can appear):"
+                 % int(100 * DIAG_MIN_DOC_FREQ))
+        L.append("")
+        L.append("| feature | mean contribution | share of emails |")
+        L.append("|---|---:|---:|")
+        for t in dg["top_pushes_english"]:
+            L.append("| `%s` | %+.3f | %s |" % (t["feature"], t["mean_contribution"], pct(t["share_of_emails"])))
+        L.append("")
     f = open(os.path.join(REPORTS, "COMMERCIAL.md"), "w", encoding="utf-8")
     f.write("\n".join(L))
     f.close()
