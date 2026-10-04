@@ -67,7 +67,18 @@ def main():
         ratio = p["rate"] / max(c["rate"], 1.0 / max(c["n"], 1))
         verdicts[s] = {"ratio": round(ratio, 2), "promising": bool(p["rate"] >= MIN_PHISH_RATE and ratio >= MIN_RATIO)}
 
+    # keşif (protokolde yok, sonuçtan sonra eklendi): göndereni doğrulanmış mail oranı =
+    # DMARC geçiyor VE DKIM imzası From domain'iyle eşleşiyor. İki aşamalı bir tasarımın bedelini gösterir.
+    def verified(x):
+        return x["dmarc_not_pass"] is False and not x["dkim_not_aligned"]
+
+    exploratory = {}
+    for name, sigs in [("Nazario 2019-24 (phishing)", phish), ("promotions (legitimate)", promo)]:
+        k = sum(1 for x in sigs if verified(x))
+        exploratory[name] = {"k": k, "n": len(sigs), "rate": round(k / len(sigs), 4), "ci": wilson_ci(k, len(sigs))}
+
     results = {"promo_counts": counts, "groups": groups, "verdicts": verdicts,
+               "verified_sender_exploratory": exploratory,
                "runtime_seconds": round(time.time() - started, 1)}
     f = open(os.path.join(REPORTS, "headers.json"), "w", encoding="utf-8")
     json.dump(results, f, indent=2)
@@ -124,6 +135,19 @@ def write_markdown(r):
         L.append("|---|---:|---:|")
         for v in values:
             L.append("| %s | %.1f%% | %.1f%% |" % (v, 100 * P["recorded"][m].get(v, 0), 100 * C["recorded"][m].get(v, 0)))
+        L.append("")
+    ex = r.get("verified_sender_exploratory")
+    if ex:
+        L.append("## Verified sender (exploratory, added after the result)")
+        L.append("")
+        L.append("Not in the protocol. A **verified sender** passes DMARC and carries a DKIM signature aligned with "
+                 "its `From` domain: the mail really comes from the domain it shows. That does not make the domain "
+                 "honest; phishers can authenticate their own lookalike domains.")
+        L.append("")
+        L.append("| group | verified sender |")
+        L.append("|---|---:|")
+        for name, x in ex.items():
+            L.append("| %s | %s |" % (name, pct(x)))
         L.append("")
     L.append("## Caveats")
     L.append("")

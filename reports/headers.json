@@ -1,0 +1,286 @@
+{
+  "promo_counts": {
+    "dropped_by_junk_filter": 0,
+    "messages_read": 3652,
+    "after_dedup": 1603,
+    "senders": 46,
+    "after_sender_cap": 676
+  },
+  "groups": {
+    "Nazario 2019-24 (phishing)": {
+      "n": 1571,
+      "signals": {
+        "no_auth_results": {
+          "k": 418,
+          "n": 1571,
+          "rate": 0.2661,
+          "ci": [
+            0.2448,
+            0.2885
+          ]
+        },
+        "spf_not_pass": {
+          "k": 340,
+          "n": 1141,
+          "rate": 0.298,
+          "ci": [
+            0.2722,
+            0.3252
+          ]
+        },
+        "dkim_not_pass": {
+          "k": 437,
+          "n": 1139,
+          "rate": 0.3837,
+          "ci": [
+            0.3559,
+            0.4123
+          ]
+        },
+        "dmarc_not_pass": {
+          "k": 662,
+          "n": 1137,
+          "rate": 0.5822,
+          "ci": [
+            0.5533,
+            0.6106
+          ]
+        },
+        "no_dkim_signature": {
+          "k": 637,
+          "n": 1571,
+          "rate": 0.4055,
+          "ci": [
+            0.3815,
+            0.43
+          ]
+        },
+        "dkim_not_aligned": {
+          "k": 824,
+          "n": 1571,
+          "rate": 0.5245,
+          "ci": [
+            0.4998,
+            0.5491
+          ]
+        },
+        "return_path_not_aligned": {
+          "k": 296,
+          "n": 1571,
+          "rate": 0.1884,
+          "ci": [
+            0.1698,
+            0.2085
+          ]
+        },
+        "reply_to_other_domain": {
+          "k": 111,
+          "n": 1571,
+          "rate": 0.0707,
+          "ci": [
+            0.059,
+            0.0844
+          ]
+        },
+        "from_freemail": {
+          "k": 39,
+          "n": 1571,
+          "rate": 0.0248,
+          "ci": [
+            0.0182,
+            0.0338
+          ]
+        }
+      },
+      "recorded": {
+        "spf": {
+          "pass": 0.5099,
+          "missing": 0.2737,
+          "softfail": 0.091,
+          "none": 0.0751,
+          "fail": 0.035,
+          "neutral": 0.0076,
+          "temperror": 0.007,
+          "permerror": 0.0006
+        },
+        "dkim": {
+          "pass": 0.4468,
+          "missing": 0.275,
+          "none": 0.2661,
+          "fail": 0.0076,
+          "temperror": 0.0038,
+          "permerror": 0.0006
+        },
+        "dmarc": {
+          "none": 0.3864,
+          "pass": 0.3024,
+          "missing": 0.2763,
+          "fail": 0.0242,
+          "temperror": 0.0089,
+          "permerror": 0.0019
+        }
+      }
+    },
+    "promotions (legitimate)": {
+      "n": 676,
+      "signals": {
+        "no_auth_results": {
+          "k": 0,
+          "n": 676,
+          "rate": 0.0,
+          "ci": [
+            0.0,
+            0.0057
+          ]
+        },
+        "spf_not_pass": {
+          "k": 3,
+          "n": 673,
+          "rate": 0.0045,
+          "ci": [
+            0.0015,
+            0.013
+          ]
+        },
+        "dkim_not_pass": {
+          "k": 0,
+          "n": 676,
+          "rate": 0.0,
+          "ci": [
+            0.0,
+            0.0057
+          ]
+        },
+        "dmarc_not_pass": {
+          "k": 4,
+          "n": 676,
+          "rate": 0.0059,
+          "ci": [
+            0.0023,
+            0.0151
+          ]
+        },
+        "no_dkim_signature": {
+          "k": 0,
+          "n": 676,
+          "rate": 0.0,
+          "ci": [
+            0.0,
+            0.0057
+          ]
+        },
+        "dkim_not_aligned": {
+          "k": 31,
+          "n": 676,
+          "rate": 0.0459,
+          "ci": [
+            0.0325,
+            0.0644
+          ]
+        },
+        "return_path_not_aligned": {
+          "k": 38,
+          "n": 676,
+          "rate": 0.0562,
+          "ci": [
+            0.0412,
+            0.0762
+          ]
+        },
+        "reply_to_other_domain": {
+          "k": 0,
+          "n": 676,
+          "rate": 0.0,
+          "ci": [
+            0.0,
+            0.0057
+          ]
+        },
+        "from_freemail": {
+          "k": 30,
+          "n": 676,
+          "rate": 0.0444,
+          "ci": [
+            0.0313,
+            0.0626
+          ]
+        }
+      },
+      "recorded": {
+        "spf": {
+          "pass": 0.9911,
+          "missing": 0.0044,
+          "none": 0.0044
+        },
+        "dkim": {
+          "pass": 1.0
+        },
+        "dmarc": {
+          "pass": 0.9941,
+          "permerror": 0.003,
+          "fail": 0.0015,
+          "none": 0.0015
+        }
+      }
+    }
+  },
+  "verdicts": {
+    "no_auth_results": {
+      "ratio": 179.88,
+      "promising": true
+    },
+    "spf_not_pass": {
+      "ratio": 66.22,
+      "promising": true
+    },
+    "dkim_not_pass": {
+      "ratio": 259.38,
+      "promising": true
+    },
+    "dmarc_not_pass": {
+      "ratio": 98.68,
+      "promising": true
+    },
+    "no_dkim_signature": {
+      "ratio": 274.12,
+      "promising": true
+    },
+    "dkim_not_aligned": {
+      "ratio": 11.43,
+      "promising": true
+    },
+    "return_path_not_aligned": {
+      "ratio": 3.35,
+      "promising": true
+    },
+    "reply_to_other_domain": {
+      "ratio": 47.79,
+      "promising": true
+    },
+    "from_freemail": {
+      "ratio": 0.56,
+      "promising": false
+    }
+  },
+  "verified_sender_exploratory": {
+    "Nazario 2019-24 (phishing)": {
+      "k": 424,
+      "n": 1571,
+      "rate": 0.2699,
+      "ci": [
+        0.2485,
+        0.2924
+      ]
+    },
+    "promotions (legitimate)": {
+      "k": 642,
+      "n": 676,
+      "rate": 0.9497,
+      "ci": [
+        0.9305,
+        0.9638
+      ]
+    }
+  },
+  "runtime_seconds": 20.2
+}

@@ -130,6 +130,25 @@ Three candidates against production, with the decision rule committed first ([pr
 
 Full tables: [`reports/COMMERCIAL_FIX.md`](reports/COMMERCIAL_FIX.md).
 
+## Sender authentication: SPF, DKIM, DMARC (measurement only)
+
+These headers record whether a mail really comes from the domain it shows. They are **not model features**: the mailing-list archives used as legitimate training mail strip them (0% present), so any header feature would learn the source. The measurement compares training phishing (Nazario 2019–2024, 1,571 emails) with the author's private promotions (676 emails, without the DMARC part of the junk filter). Phishing Pot and the lockbox are kept back for a later blind test ([protocol](reports/HEADERS_PROTOCOL.md)).
+
+| Signal | Phishing | Promotions |
+|---|---:|---:|
+| DMARC recorded, not `pass` | 58.2% | 0.6% |
+| DKIM not aligned with the `From` domain | 52.4% | 4.6% |
+| No DKIM signature | 40.6% | 0.0% |
+| `Reply-To` on another domain | 7.1% | 0.0% |
+| Sender on a freemail domain | 2.5% | 4.4% |
+
+- **Strong and complementary to the text.** Eight of the nine signals pass the pre-registered rule. Freemail is the exception.
+- **The receiver-independent checks are the trustworthy ones.** DKIM alignment and `Reply-To` are computed from the headers themselves. The recorded SPF/DKIM/DMARC results were written by different servers (iCloud for the promotions, the collector or a forwarder for Nazario). "No results at all" (26.6% of phishing, 0% of promotions) is a collection artifact, not a phishing trait.
+- **They cannot catch everything** (exploratory, after the result). 95.0% of promotions come from a **verified sender** (DMARC pass and aligned DKIM), and so does **27.0% of phishing**: phishers authenticate their own lookalike domains.
+- **What this suggests:** a second stage for verified senders could remove most commercial false alarms. Suppressing alerts for them outright would cost up to a quarter of phishing recall. The design needs its own protocol and a blind test on Phishing Pot.
+
+Full tables: [`reports/HEADERS.md`](reports/HEADERS.md).
+
 ## How false alarms were cut by 25×
 
 The first ML version flagged 25% of Apache release announcements and **half of Ubuntu security notices** as phishing.
@@ -376,6 +395,8 @@ Top ML signals:
 | `experiments_false_alarms.py` | False-alarm study → `reports/FALSE_ALARMS.md` |
 | `experiments_recall.py` | Recall study → `reports/RECALL.md` |
 | `html_signals.py` | Language-independent HTML signals (forms, hidden text, link text vs. target). Measured, not used by the model |
+| `header_signals.py` | Sender-authentication checks (recorded SPF/DKIM/DMARC, DKIM and Return-Path alignment). Measured, not used by the model |
+| `experiments_headers.py` | SPF/DKIM/DMARC measurement → `reports/HEADERS.md` (private data) |
 | `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
 | `experiments_commercial.py` | Commercial-mail test on private data → `reports/COMMERCIAL.md` (not in `run_all.sh`) |
 | `experiments_url.py` | URL feature comparison (production vs + URL, pre-registered rule) → `reports/URL_FEATURES.md` |
@@ -385,7 +406,7 @@ Top ML signals:
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 60 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 61 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.
@@ -400,6 +421,7 @@ The code is MIT-licensed ([`LICENSE`](LICENSE)). No email data or trained model 
 
 - **Fix the commercial false alarms first, with English legitimate marketing mail in training.** The P3 diagnostic shows this is the lever; removing Kaggle is not. One source would be a research inbox used only for this project and subscribed to English newsletters, which holds no personal data. A second option is a separate bulk-mail stage before the phishing model, as mail providers do with their Promotions folders.
 - Attachment names and types as features. Many of the missed lures say "see attached".
-- HTML signals (link text vs. link target, forms, hidden text), once there is legitimate HTML mail to train and test on: in the current data 98% of phishing has HTML and almost no legitimate email does, so any HTML feature would learn the source. Header signals (SPF/DKIM/DMARC results, Reply-To mismatch).
+- HTML signals (link text vs. link target, forms, hidden text), once there is legitimate HTML mail to train and test on: in the current data 98% of phishing has HTML and almost no legitimate email does, so any HTML feature would learn the source.
+- A second stage for verified senders (DMARC pass and aligned DKIM), designed under its own protocol and tested blind on Phishing Pot. The [measurement](#sender-authentication-spf-dkim-dmarc-measurement-only) shows it could remove most commercial false alarms, but 27% of training phishing also comes from verified senders.
 - A transformer baseline (DistilBERT) to compare against TF-IDF on the hold-outs.
 - Robustness tests: invisible characters, homoglyphs, `hxxp` / `[.]` link obfuscation.
