@@ -130,6 +130,23 @@ Three candidates against production, with the decision rule committed first ([pr
 
 Full tables: [`reports/COMMERCIAL_FIX.md`](reports/COMMERCIAL_FIX.md).
 
+### Second attempt: make the model rely less on tone
+
+Public legitimate marketing mail does not exist: the one candidate (`marketeam/Marketing-Emails`) turned out to be internal team correspondence with no links. So the second attempt changed the model instead. The generic words that carry tone ("your" has the largest coefficient, +5.4) were removed, or the character n-grams, or both ([protocol](reports/TONE_PROTOCOL.md)).
+
+| | English promotions | All promotions | A false alarms | C recall | LLM-written phishing recall |
+|---|---:|---:|---:|---:|---:|
+| **Production** | 87.6% | 92.9% | 1.5% | 93.0% | 97.1% |
+| M1: no English stop words | 88.8% | 89.9% | 1.8% | 91.1% | 97.2% |
+| M2: no character n-grams | 89.9% | 89.6% | 2.2% | 89.7% | 98.4% |
+| M3: both | 88.2% | 82.8% | 2.8% | 88.8% | 98.0% |
+
+- **No variant qualifies.** English promotions do not move, and removing character n-grams raises false alarms on the mailing lists.
+- **The tone is carried by content words**, not by function words or spelling patterns: "unsubscribe", "offer", "account", "click". A model that sees no legitimate marketing has no reason to treat those as legitimate.
+- **This confirms the earlier diagnostic:** the fix has to come from training data, not from the model.
+
+Full tables: [`reports/TONE.md`](reports/TONE.md).
+
 ## Sender authentication: SPF, DKIM, DMARC (measurement only)
 
 These headers record whether a mail really comes from the domain it shows. They are **not model features**: the mailing-list archives used as legitimate training mail strip them (0% present), so any header feature would learn the source. The measurement compares training phishing (Nazario 2019–2024, 1,571 emails) with the author's private promotions (676 emails, without the DMARC part of the junk filter). Phishing Pot and the lockbox are kept back for a later blind test ([protocol](reports/HEADERS_PROTOCOL.md)).
@@ -450,6 +467,7 @@ Top ML signals:
 | `html_signals.py` | Language-independent HTML signals (forms, hidden text, link text vs. target). Measured, not used by the model |
 | `header_signals.py` | Sender-authentication checks (recorded SPF/DKIM/DMARC, DKIM and Return-Path alignment). Measured, not used by the model |
 | `experiments_headers.py` | SPF/DKIM/DMARC measurement → `reports/HEADERS.md` (private data) |
+| `experiments_tone.py` | Pre-registered tone experiment (stop words, character n-grams) → `reports/TONE.md` (private data) |
 | `experiments_llm.py` | LLM-written phishing test (Zenodo, Greco) → `reports/LLM_PHISHING.md` |
 | `experiments_sender_stage.py` | Pre-registered verified-sender second stage → `reports/SENDER_STAGE.md` (private data) |
 | `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
