@@ -93,7 +93,7 @@ The rules were committed before the run ([protocol](reports/COMMERCIAL_PROTOCOL.
 - **Why (exploratory, found after the result):** the text features put promotional mail on the phishing side.
   - The mean word + character contribution is **+2.4** for English promotions, against −7.4 for the 2024 mailing lists in training and +5.5 for Kaggle "phishing".
   - The words that push hardest are marketing language: "your", "email", "unsubscribe", "this email".
-  - The cause: no legitimate training email is marketing, and Kaggle's "phishing" class is mostly bulk spam ([finding 2](#key-findings)). So the model learned "marketing = phishing".
+  - The cause is mainly the **missing marketing on the legitimate side**: no legitimate training email is marketing. The first guess, that Kaggle's spam-heavy "phishing" class ([finding 2](#key-findings)) taught it, explains little: removing it barely helps (see below), while adding legitimate promotions does.
 - **Not a language effect:** English promotions are flagged almost as often as Turkish ones.
 - **The URL features don't fix it:** 91.8% instead of 92.9% (McNemar p = 0.17).
 - **HTML signals, measured on the same mail:** none passes the pre-registered rule (at least 5% of training phishing and at least 3× the rate on promotions).
@@ -104,9 +104,31 @@ The rules were committed before the run ([protocol](reports/COMMERCIAL_PROTOCOL.
   - The comparison phishing is older (2019–2024).
   - "Legitimate" relies on the Promotions category plus a junk filter (iCloud routed the email to the inbox and it passes DMARC).
 
-**What it means:** as it stands, the model behaves more like a bulk-mail detector than a phishing detector. Fixing that is the next step.
+**What it means:** as it stands, the model behaves more like a bulk-mail detector than a phishing detector.
 
 Full tables: [`reports/COMMERCIAL.md`](reports/COMMERCIAL.md).
+
+### First attempt to fix it
+
+Three candidates against production, with the decision rule committed first ([protocol](reports/COMMERCIAL_FIX_PROTOCOL.md)). Only P1 and P2 use public data and could replace production. P3 is a diagnostic: its promotions are scored by models that never saw their sender (5 folds by sender domain).
+
+| | English promotions | All promotions | A false alarms | 2025 recall | C recall |
+|---|---:|---:|---:|---:|---:|
+| **Production** | 87.6% | 92.9% | 1.5% | 99.1% | 93.0% |
+| P1: no Kaggle | 84.6% | 76.1% | 2.6% | 99.3% | 66.4% |
+| P2: only Kaggle's legitimate emails | 82.2% | 76.7% | 3.6% | 98.9% | 75.2% |
+| P3: + private promotions in training | **37.3%** | **15.0%** | 0.9% | 97.1% | 85.0% |
+
+- **Removing Kaggle's spam does not fix it.**
+  - English promotions barely move: 84.6% (p = 0.23) and 82.2% (p = 0.01).
+  - False alarms on the hold-outs rise significantly (A: 1.5% → 2.6–3.6%).
+  - Phishing Pot recall collapses to 66–75%.
+  - Neither candidate qualifies, so **production stays as it is.**
+- **Seeing legitimate marketing does most of the work.** With the private promotions in training, English promotions from unseen senders drop from 87.6% to 37.3%.
+  - It costs recall: 9 more of the 454 phishing emails from 2025 are missed (p = 0.004). Phishing and marketing look alike.
+- **37% is still far too high.** Most of the training promotions were Turkish; the non-English rate falls to 7.5%, partly because the model can learn "Turkish = legitimate". The fix needs **English** legitimate marketing mail at scale, which no public dataset provides.
+
+Full tables: [`reports/COMMERCIAL_FIX.md`](reports/COMMERCIAL_FIX.md).
 
 ## How false alarms were cut by 25×
 
@@ -354,6 +376,7 @@ Top ML signals:
 | `experiments_false_alarms.py` | False-alarm study → `reports/FALSE_ALARMS.md` |
 | `experiments_recall.py` | Recall study → `reports/RECALL.md` |
 | `html_signals.py` | Language-independent HTML signals (forms, hidden text, link text vs. target). Measured, not used by the model |
+| `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
 | `experiments_commercial.py` | Commercial-mail test on private data → `reports/COMMERCIAL.md` (not in `run_all.sh`) |
 | `experiments_url.py` | URL feature comparison (production vs + URL, pre-registered rule) → `reports/URL_FEATURES.md` |
 | `experiments_tuning.py` | Near-duplicate effect + hyperparameter search → `reports/TUNING.md` |
@@ -375,7 +398,7 @@ The code is MIT-licensed ([`LICENSE`](LICENSE)). No email data or trained model 
 
 ## Next steps
 
-- **Fix the commercial false alarms first.** Options: train without Kaggle (finding 4 already suggests it may hurt), separate Kaggle's bulk spam from real phishing, and add legitimate marketing mail to training, tested on different senders.
+- **Fix the commercial false alarms first, with English legitimate marketing mail in training.** The P3 diagnostic shows this is the lever; removing Kaggle is not. One source would be a research inbox used only for this project and subscribed to English newsletters, which holds no personal data. A second option is a separate bulk-mail stage before the phishing model, as mail providers do with their Promotions folders.
 - Attachment names and types as features. Many of the missed lures say "see attached".
 - HTML signals (link text vs. link target, forms, hidden text), once there is legitimate HTML mail to train and test on: in the current data 98% of phishing has HTML and almost no legitimate email does, so any HTML feature would learn the source. Header signals (SPF/DKIM/DMARC results, Reply-To mismatch).
 - A transformer baseline (DistilBERT) to compare against TF-IDF on the hold-outs.
