@@ -168,6 +168,39 @@ The pre-registered design ([protocol](reports/SENDER_STAGE_PROTOCOL.md)) works l
 
 Full tables: [`reports/SENDER_STAGE.md`](reports/SENDER_STAGE.md).
 
+## LLM-written phishing
+
+Two test-only sets, with the decision rule committed first ([protocol](reports/LLM_PHISHING_PROTOCOL.md)):
+- **Zenodo** ([Gutierrez et al. 2026](https://doi.org/10.5281/zenodo.20250116)): 4,986 phishing emails written by GPT-4.1, DeepSeek 3.2 and Llama 3.3 70B in five themes.
+- **Greco** et al. 2024: 1,000 phishing emails written by ChatGPT and WormGPT.
+
+None is a near-copy of training phishing.
+
+| | Emails | Recall |
+|---|---:|---:|
+| **Zenodo, all** | 4,986 | **97.1%** (96.6–97.5) |
+| GPT-4.1 | 1,665 | 98.7% (98.0–99.1) |
+| DeepSeek 3.2 | 1,665 | 97.5% (96.7–98.2) |
+| Llama 3.3 70B | 1,656 | 95.0% (93.9–96.0) |
+| HR theme | 996 | **85.7%** (83.4–87.8) |
+| Banking, parcel, IT support, tax themes | 3,990 | 99.7–100% |
+| Greco (ChatGPT, WormGPT) | 1,000 | 99.5% (98.8–99.8) |
+| For comparison: hold-out C, human-written | 214 | 93.0% (88.8–95.7) |
+
+- **Under the pre-registered rule, LLM-written phishing is not harder:** recall is higher than on human-written hold-out C (Fisher p = 0.003).
+- **Weak spots:**
+  - HR lures: benefits enrolment deadlines and staff reorganisation memos, the same kind of lure the model missed in finding 2.
+  - Llama 3.3.
+  - Emails without a link: 94.5%, against 98.8% with one.
+- **But high recall here proves little.** In an exploratory audit, 40 random emails from Greco's "legitimate" LLM set were labelled by one person, after the result and with the model's scores visible ([labels](reports/llm_legit_audit.json)). **15 of the 16 clearly benign ones are flagged:** COVID notices, event invitations, tips.
+  - As with the promotions, polished corporate-sounding text is flagged almost regardless of intent.
+  - So recall on LLM-written phishing means little without a false-alarm rate on LLM-written legitimate mail of the same style.
+- **Caveats:**
+  - The emails were generated on request, in themes that overlap the training phishing, so this tests style more than new lures.
+  - 13% of the Zenodo emails carry a bracketed placeholder where a link would be.
+
+Full tables: [`reports/LLM_PHISHING.md`](reports/LLM_PHISHING.md).
+
 ## How false alarms were cut by 25×
 
 The first ML version flagged 25% of Apache release announcements and **half of Ubuntu security notices** as phishing.
@@ -379,6 +412,7 @@ pip install -r requirements.txt
 ./download_data.sh            # all datasets, ~330 MB on disk in data/raw/
 ./run_all.sh                  # every report + the production model, same code and data (~45 min)
 python evaluate_lockbox.py    # one-time lockbox test (already run; refuses to run again)
+./download_llm.sh && python experiments_llm.py   # LLM-written phishing test
 python experiments_commercial.py  # needs your own Mail export in data/raw/own_promo/ (see the protocol)
 
 python main.py samples/suspicious_sample.txt --no-dns                       # rules only
@@ -416,6 +450,7 @@ Top ML signals:
 | `html_signals.py` | Language-independent HTML signals (forms, hidden text, link text vs. target). Measured, not used by the model |
 | `header_signals.py` | Sender-authentication checks (recorded SPF/DKIM/DMARC, DKIM and Return-Path alignment). Measured, not used by the model |
 | `experiments_headers.py` | SPF/DKIM/DMARC measurement → `reports/HEADERS.md` (private data) |
+| `experiments_llm.py` | LLM-written phishing test (Zenodo, Greco) → `reports/LLM_PHISHING.md` |
 | `experiments_sender_stage.py` | Pre-registered verified-sender second stage → `reports/SENDER_STAGE.md` (private data) |
 | `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
 | `experiments_commercial.py` | Commercial-mail test on private data → `reports/COMMERCIAL.md` (not in `run_all.sh`) |

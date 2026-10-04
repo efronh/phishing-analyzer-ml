@@ -1,0 +1,451 @@
+{
+  "threshold": 0.519,
+  "sets": {
+    "Zenodo (GPT-4.1, DeepSeek 3.2, Llama 3.3)": {
+      "n_raw": 4986,
+      "near_duplicates_removed": 0,
+      "flagged": {
+        "k": 4841,
+        "n": 4986,
+        "rate": 0.9709,
+        "ci": [
+          0.9659,
+          0.9752
+        ]
+      },
+      "median_probability": 0.9998,
+      "by_generator": {
+        "deepseek3.2": {
+          "k": 1624,
+          "n": 1665,
+          "rate": 0.9754,
+          "ci": [
+            0.9668,
+            0.9818
+          ]
+        },
+        "gpt-4.1": {
+          "k": 1643,
+          "n": 1665,
+          "rate": 0.9868,
+          "ci": [
+            0.9801,
+            0.9913
+          ]
+        },
+        "llama-3.3-70b": {
+          "k": 1574,
+          "n": 1656,
+          "rate": 0.9505,
+          "ci": [
+            0.939,
+            0.9599
+          ]
+        }
+      },
+      "by_theme": {
+        "banking": {
+          "k": 998,
+          "n": 998,
+          "rate": 1.0,
+          "ci": [
+            0.9962,
+            1.0
+          ]
+        },
+        "hr": {
+          "k": 854,
+          "n": 996,
+          "rate": 0.8574,
+          "ci": [
+            0.8343,
+            0.8778
+          ]
+        },
+        "it_support": {
+          "k": 995,
+          "n": 995,
+          "rate": 1.0,
+          "ci": [
+            0.9962,
+            1.0
+          ]
+        },
+        "parcel_delivery": {
+          "k": 999,
+          "n": 999,
+          "rate": 1.0,
+          "ci": [
+            0.9962,
+            1.0
+          ]
+        },
+        "tax_irs": {
+          "k": 995,
+          "n": 998,
+          "rate": 0.997,
+          "ci": [
+            0.9912,
+            0.999
+          ]
+        }
+      },
+      "by_links": {
+        "no link": {
+          "k": 1641,
+          "n": 1736,
+          "rate": 0.9453,
+          "ci": [
+            0.9336,
+            0.955
+          ]
+        },
+        "placeholder only": {
+          "k": 354,
+          "n": 369,
+          "rate": 0.9593,
+          "ci": [
+            0.934,
+            0.9752
+          ]
+        },
+        "real link": {
+          "k": 2846,
+          "n": 2881,
+          "rate": 0.9879,
+          "ci": [
+            0.9832,
+            0.9913
+          ]
+        }
+      },
+      "chi2_p_generator": 0.0,
+      "chi2_p_theme": 0.0,
+      "lowest_scored": [
+        {
+          "score": 0.009,
+          "generator": "llama-3.3-70b",
+          "theme": "hr",
+          "text": "Subject: Confidential: Staffing Reorganisation Update and Benefits Enrollment [body: 1477 chars, 0 links]"
+        },
+        {
+          "score": 0.0359,
+          "generator": "llama-3.3-70b",
+          "theme": "hr",
+          "text": "Subject: Action Required: Benefits Enrollment Deadline Today [body: 1396 chars, 1 links]"
+        },
+        {
+          "score": 0.0426,
+          "generator": "deepseek3.2",
+          "theme": "hr",
+          "text": "Subject: Action Required: Complete Your Annual Benefits Enrollment by 5 PM Today [body: 1168 chars, 0 links]"
+        },
+        {
+          "score": 0.0485,
+          "generator": "gpt-4.1",
+          "theme": "hr",
+          "text": "Subject: Final Reminder: Benefits Enrollment Deadline is Today [body: 1018 chars, 1 links]"
+        },
+        {
+          "score": 0.0506,
+          "generator": "llama-3.3-70b",
+          "theme": "hr",
+          "text": "Subject: Urgent: Benefits Enrollment Deadline Today - Action Required [body: 1161 chars, 1 links]"
+        },
+        {
+          "score": 0.0509,
+          "generator": "deepseek3.2",
+          "theme": "hr",
+          "text": "Subject: URGENT: Your Benefits Enrollment Deadline is TODAY [body: 1257 chars, 0 links]"
+        },
+        {
+          "score": 0.0544,
+          "generator": "llama-3.3-70b",
+          "theme": "hr",
+          "text": "Subject: Confidential: Staffing Reorganisation Memo [body: 1275 chars, 0 links]"
+        },
+        {
+          "score": 0.0607,
+          "generator": "gpt-4.1",
+          "theme": "hr",
+          "text": "Subject: Confidential: Upcoming Staffing Reorganisation Memo [body: 1343 chars, 1 links]"
+        },
+        {
+          "score": 0.0712,
+          "generator": "llama-3.3-70b",
+          "theme": "hr",
+          "text": "Subject: Mandatory: Review and Sign Updated Employee Handbook [body: 1232 chars, 0 links]"
+        },
+        {
+          "score": 0.0717,
+          "generator": "llama-3.3-70b",
+          "theme": "hr",
+          "text": "Subject: Mandatory: Review and Sign Updated Employee Handbook [body: 1129 chars, 0 links]"
+        }
+      ]
+    },
+    "Greco LLM phishing (ChatGPT, WormGPT)": {
+      "n_raw": 1000,
+      "near_duplicates_removed": 0,
+      "flagged": {
+        "k": 995,
+        "n": 1000,
+        "rate": 0.995,
+        "ci": [
+          0.9883,
+          0.9979
+        ]
+      },
+      "median_probability": 0.9994,
+      "by_generator": {
+        "ChatGPT/WormGPT": {
+          "k": 995,
+          "n": 1000,
+          "rate": 0.995,
+          "ci": [
+            0.9883,
+            0.9979
+          ]
+        }
+      },
+      "by_theme": {
+        "-": {
+          "k": 995,
+          "n": 1000,
+          "rate": 0.995,
+          "ci": [
+            0.9883,
+            0.9979
+          ]
+        }
+      },
+      "by_links": {
+        "no link": {
+          "k": 145,
+          "n": 146,
+          "rate": 0.9932,
+          "ci": [
+            0.9622,
+            0.9988
+          ]
+        },
+        "real link": {
+          "k": 850,
+          "n": 854,
+          "rate": 0.9953,
+          "ci": [
+            0.988,
+            0.9982
+          ]
+        }
+      },
+      "chi2_p_generator": null,
+      "chi2_p_theme": null,
+      "lowest_scored": [
+        {
+          "score": 0.1917,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 711 chars, 1 links]"
+        },
+        {
+          "score": 0.201,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 833 chars, 1 links]"
+        },
+        {
+          "score": 0.47,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 952 chars, 0 links]"
+        },
+        {
+          "score": 0.4702,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 236 chars, 1 links]"
+        },
+        {
+          "score": 0.5005,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 1119 chars, 1 links]"
+        }
+      ]
+    },
+    "Greco LLM 'legitimate' (weak control)": {
+      "n_raw": 1000,
+      "near_duplicates_removed": 0,
+      "flagged": {
+        "k": 980,
+        "n": 1000,
+        "rate": 0.98,
+        "ci": [
+          0.9693,
+          0.987
+        ]
+      },
+      "median_probability": 0.9982,
+      "by_generator": {
+        "ChatGPT/WormGPT": {
+          "k": 980,
+          "n": 1000,
+          "rate": 0.98,
+          "ci": [
+            0.9693,
+            0.987
+          ]
+        }
+      },
+      "by_theme": {
+        "-": {
+          "k": 980,
+          "n": 1000,
+          "rate": 0.98,
+          "ci": [
+            0.9693,
+            0.987
+          ]
+        }
+      },
+      "by_links": {
+        "no link": {
+          "k": 4,
+          "n": 4,
+          "rate": 1.0,
+          "ci": [
+            0.5101,
+            1.0
+          ]
+        },
+        "placeholder only": {
+          "k": 50,
+          "n": 60,
+          "rate": 0.8333,
+          "ci": [
+            0.7197,
+            0.9069
+          ]
+        },
+        "real link": {
+          "k": 926,
+          "n": 936,
+          "rate": 0.9893,
+          "ci": [
+            0.9804,
+            0.9942
+          ]
+        }
+      },
+      "chi2_p_generator": null,
+      "chi2_p_theme": null,
+      "lowest_scored": [
+        {
+          "score": 0.0086,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 414 chars, 0 links]"
+        },
+        {
+          "score": 0.0715,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 890 chars, 1 links]"
+        },
+        {
+          "score": 0.1338,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 678 chars, 0 links]"
+        },
+        {
+          "score": 0.1706,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 621 chars, 0 links]"
+        },
+        {
+          "score": 0.1836,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 580 chars, 1 links]"
+        },
+        {
+          "score": 0.2105,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 633 chars, 1 links]"
+        },
+        {
+          "score": 0.2192,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 886 chars, 0 links]"
+        },
+        {
+          "score": 0.2279,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 958 chars, 1 links]"
+        },
+        {
+          "score": 0.2371,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 739 chars, 0 links]"
+        },
+        {
+          "score": 0.2557,
+          "generator": "ChatGPT/WormGPT",
+          "theme": "-",
+          "text": "Subject: (none) [body: 875 chars, 1 links]"
+        }
+      ]
+    }
+  },
+  "decision": {
+    "zenodo_recall": 0.9709,
+    "holdout_c_recall": 0.9299,
+    "fisher_p": 0.003325,
+    "llm_phishing_harder": false
+  },
+  "audit_exploratory": {
+    "note": "Exploratory, added after the first run and not in the protocol. 40 emails drawn with random.Random(2026).sample(range(n), 40) from Greco's LLM 'legitimate' file (rows as loaded by experiments_llm.load_greco), read and labelled by one person (the assistant working on this project). The model's score for each email was visible while labelling, so the labels are not blind to it.",
+    "criteria": {
+      "phishing-like": "asks to verify an account or transaction, pay an invoice through a link, or claim a prize",
+      "benign": "information, invitations, tips or newsletters with no request for credentials, payment or personal data",
+      "unclear": "job offers with a link, donation appeals, scarcity-driven 'early access' marketing, security-settings reminders"
+    },
+    "flagged": {
+      "phishing-like": {
+        "k": 13,
+        "n": 13,
+        "rate": 1.0,
+        "ci": [
+          0.7719,
+          1.0
+        ]
+      },
+      "unclear": {
+        "k": 11,
+        "n": 11,
+        "rate": 1.0,
+        "ci": [
+          0.7412,
+          1.0
+        ]
+      },
+      "benign": {
+        "k": 15,
+        "n": 16,
+        "rate": 0.9375,
+        "ci": [
+          0.7167,
+          0.9889
+        ]
+      }
+    }
+  },
+  "runtime_seconds": 11.8
+}

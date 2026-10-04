@@ -1,0 +1,171 @@
+{
+ "note": "Exploratory, added after the first run and not in the protocol. 40 emails drawn with random.Random(2026).sample(range(n), 40) from Greco's LLM 'legitimate' file (rows as loaded by experiments_llm.load_greco), read and labelled by one person (the assistant working on this project). The model's score for each email was visible while labelling, so the labels are not blind to it.",
+ "criteria": {
+  "phishing-like": "asks to verify an account or transaction, pay an invoice through a link, or claim a prize",
+  "benign": "information, invitations, tips or newsletters with no request for credentials, payment or personal data",
+  "unclear": "job offers with a link, donation appeals, scarcity-driven 'early access' marketing, security-settings reminders"
+ },
+ "seed": 2026,
+ "labels": [
+  {
+   "row": 2,
+   "label": "phishing-like"
+  },
+  {
+   "row": 11,
+   "label": "phishing-like"
+  },
+  {
+   "row": 82,
+   "label": "unclear"
+  },
+  {
+   "row": 100,
+   "label": "benign"
+  },
+  {
+   "row": 105,
+   "label": "benign"
+  },
+  {
+   "row": 113,
+   "label": "phishing-like"
+  },
+  {
+   "row": 121,
+   "label": "unclear"
+  },
+  {
+   "row": 228,
+   "label": "unclear"
+  },
+  {
+   "row": 245,
+   "label": "benign"
+  },
+  {
+   "row": 294,
+   "label": "phishing-like"
+  },
+  {
+   "row": 327,
+   "label": "benign"
+  },
+  {
+   "row": 430,
+   "label": "phishing-like"
+  },
+  {
+   "row": 451,
+   "label": "phishing-like"
+  },
+  {
+   "row": 460,
+   "label": "phishing-like"
+  },
+  {
+   "row": 502,
+   "label": "unclear"
+  },
+  {
+   "row": 514,
+   "label": "benign"
+  },
+  {
+   "row": 524,
+   "label": "benign"
+  },
+  {
+   "row": 560,
+   "label": "benign"
+  },
+  {
+   "row": 569,
+   "label": "phishing-like"
+  },
+  {
+   "row": 586,
+   "label": "phishing-like"
+  },
+  {
+   "row": 600,
+   "label": "phishing-like"
+  },
+  {
+   "row": 615,
+   "label": "benign"
+  },
+  {
+   "row": 628,
+   "label": "unclear"
+  },
+  {
+   "row": 636,
+   "label": "benign"
+  },
+  {
+   "row": 662,
+   "label": "benign"
+  },
+  {
+   "row": 748,
+   "label": "benign"
+  },
+  {
+   "row": 769,
+   "label": "phishing-like"
+  },
+  {
+   "row": 786,
+   "label": "unclear"
+  },
+  {
+   "row": 791,
+   "label": "unclear"
+  },
+  {
+   "row": 795,
+   "label": "unclear"
+  },
+  {
+   "row": 802,
+   "label": "benign"
+  },
+  {
+   "row": 834,
+   "label": "benign"
+  },
+  {
+   "row": 836,
+   "label": "benign"
+  },
+  {
+   "row": 862,
+   "label": "phishing-like"
+  },
+  {
+   "row": 880,
+   "label": "phishing-like"
+  },
+  {
+   "row": 905,
+   "label": "benign"
+  },
+  {
+   "row": 912,
+   "label": "unclear"
+  },
+  {
+   "row": 916,
+   "label": "benign"
+  },
+  {
+   "row": 974,
+   "label": "unclear"
+  },
+  {
+   "row": 975,
+   "label": "unclear"
+  }
+ ]
+}

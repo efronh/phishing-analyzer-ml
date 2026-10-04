@@ -133,6 +133,19 @@ def main():
     harder = z["rate"] < C_REF[0] / C_REF[1] and p_fisher < 0.05
     results["decision"] = {"zenodo_recall": z["rate"], "holdout_c_recall": round(C_REF[0] / C_REF[1], 4),
                            "fisher_p": round(float(p_fisher), 6), "llm_phishing_harder": bool(harder)}
+    # keşif (protokolde yok, ilk çalıştırmadan sonra): Greco "meşru" setinden 40 mailin elle etiketlenmesi
+    audit_path = os.path.join(REPORTS, "llm_legit_audit.json")
+    if os.path.exists(audit_path):
+        f = open(audit_path, encoding="utf-8")
+        audit = json.load(f)
+        f.close()
+        legit = load_greco("legit.csv")
+        p_audit = model.predict_proba([legit[x["row"]]["text"] for x in audit["labels"]])
+        groups = {}
+        for x, pp in zip(audit["labels"], p_audit):
+            groups.setdefault(x["label"], []).append(pp >= model.threshold)
+        results["audit_exploratory"] = {"note": audit["note"], "criteria": audit["criteria"],
+                                        "flagged": {k: rate(sum(v), len(v)) for k, v in groups.items()}}
     results["runtime_seconds"] = round(time.time() - started, 1)
     log("decision: " + json.dumps(results["decision"]))
     f = open(os.path.join(REPORTS, "llm_phishing.json"), "w", encoding="utf-8")
@@ -186,6 +199,18 @@ def write_markdown(r):
         if chi:
             L.append("")
             L.append("Chi-square test of independence: p = %.3g." % e[chi])
+        L.append("")
+    a = r.get("audit_exploratory")
+    if a:
+        L.append("## Does the model flag benign LLM-written mail? (exploratory, added after the result)")
+        L.append("")
+        L.append(a["note"])
+        L.append("")
+        L.append("| label | criterion | emails | flagged by the model |")
+        L.append("|---|---|---:|---:|")
+        for k in ["benign", "unclear", "phishing-like"]:
+            if k in a["flagged"]:
+                L.append("| %s | %s | %d | %s |" % (k, a["criteria"][k], a["flagged"][k]["n"], pct(a["flagged"][k])))
         L.append("")
     g = r["sets"]["Greco LLM phishing (ChatGPT, WormGPT)"]
     L.append("## By link type (Greco phishing)")
