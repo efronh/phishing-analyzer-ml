@@ -14,6 +14,7 @@
 #
 # Kullanım: python experiments_commercial.py
 
+import base64
 import json
 import mailbox
 import os
@@ -21,9 +22,12 @@ import random
 import re
 import sys
 import time
+from email.utils import getaddresses
+from urllib.parse import quote
 
 import numpy as np
 
+from analyzer import URL_REGEX
 from email_parsing import message_to_text, parse_bytes
 from evaluation import load_csv, mcnemar_exact, near_duplicate_groups, wilson_ci
 from features import URL_FEATURE_NAMES, _url_features
@@ -70,6 +74,67 @@ def load_redactor():
     return re.compile(pattern, re.IGNORECASE), len(terms)
 
 
+# alıcı adresinin geçebileceği header'lar (Hide My Email adresleri dahil)
+RECIPIENT_HEADERS = ["To", "Cc", "Delivered-To", "X-Original-To", "Original-Recipient"]
+# metindeki kişisel numaralar - URL'lerin DIŞINDA (URL feature'ları bozulmasın)
+PHONE_RE = re.compile(r"(?<!\d)(\+?90[\s.-]?)?\(?0?5\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2}(?!\d)"
+                      r"|\+\d{1,3}[\s.-]?\(?\d{2,4}\)?([\s.-]?\d{2,4}){2,4}")
+CARD_RE = re.compile(r"(?<!\d)(\d{4}[ -]){3}\d{4}(?!\d)|\*{2,}[\s*]*\d{4}")
+LONG_NUMBER_RE = re.compile(r"(?<!\d)\d{10,}(?!\d)")
+
+
+def recipient_variants(msg):
+    """Bu mailin alıcı adres(ler)i ve linklerde geçebilecek kodlanmış halleri:
+    URL-encoded, iki kez encoded, base64 (standart ve URL-safe), adresin @ öncesi kısmı."""
+    out = set()
+    values = []
+    for h in RECIPIENT_HEADERS:
+        values.extend(str(v) for v in (msg.get_all(h) or []))
+    for _, addr in getaddresses(values):
+        addr = addr.strip().strip("<>;")
+        if "@" not in addr:
+            continue
+        out.update({addr, quote(addr, safe=""), quote(quote(addr, safe=""), safe="")})
+        for enc in (base64.b64encode, base64.urlsafe_b64encode):
+            out.add(enc(addr.encode()).decode().rstrip("="))
+        local = addr.split("@", 1)[0]
+        if len(local) >= 4:
+            out.add(local)
+    return out
+
+
+def mask_personal(text, msg, redactor):
+    """Metin modele girmeden önce: redact.txt kelimeleri, alıcı adres(ler)i (her kodlamada),
+    URL dışındaki telefon / kart / uzun numaralar silinir."""
+    if redactor is not None:
+        text = redactor.sub("", text)
+    variants = sorted(recipient_variants(msg), key=len, reverse=True)
+    if variants:
+        rx = re.compile(r"(?<![\w.%+-])(" + "|".join(re.escape(v) for v in variants) + r")(?![\w%-])",
+                        re.IGNORECASE)
+        text = rx.sub("", text)
+    parts = []
+    last = 0
+    for m in URL_REGEX.finditer(text):
+        parts.append(_mask_numbers(text[last:m.start()]))
+        parts.append(m.group(0))
+        last = m.end()
+    parts.append(_mask_numbers(text[last:]))
+    return "".join(parts)
+
+
+def _mask_numbers(chunk):
+    return LONG_NUMBER_RE.sub("", CARD_RE.sub("", PHONE_RE.sub("", chunk)))
+
+
+def passes_filter(msg):
+    """Junk karışmış olabilir: sadece iCloud'un geldiği anda INBOX'a koyduğu ve DMARC'ı
+    geçen mailler tutulur. İçeriğe bakmayan, önceden sabitlenen kural (protokol, ek 1)."""
+    folder = str(msg.get("X-Apple-Movetofolder", "") or "").strip().upper()
+    auth = " ".join(str(v) for v in (msg.get_all("Authentication-Results") or [])).lower()
+    return folder == "INBOX" and re.search(r"dmarc=pass\b", auth) is not None
+
+
 def promo_mbox_paths():
     out = []
     for name in sorted(os.listdir(PROMO_DIR)):
@@ -90,15 +155,17 @@ def read_mbox_messages(path):
 
 def load_promo(redactor):
     rows = []
+    filtered = 0
     for path in promo_mbox_paths():
         for msg in read_mbox_messages(path):
+            if not passes_filter(msg):
+                filtered = filtered + 1
+                continue
             try:
-                text = message_to_text(msg)
+                text = mask_personal(message_to_text(msg), msg, redactor)
                 sig = html_signals(msg)
             except Exception:
                 continue
-            if redactor is not None:
-                text = redactor.sub("", text)
             if len(text) < 40:
                 continue
             rows.append({"text": text, "label": 0, "source": "own_promo",
@@ -117,7 +184,7 @@ def load_promo(redactor):
         capped.extend(items)
     for r in capped:
         r["english"] = looks_english(r["text"])
-    return capped, {"messages_read": n_raw, "after_dedup": len(rows), "senders": len(by_sender),
+    return capped, {"dropped_by_junk_filter": filtered, "messages_read": n_raw, "after_dedup": len(rows), "senders": len(by_sender),
                     "after_sender_cap": len(capped)}
 
 
@@ -246,6 +313,8 @@ def write_markdown(r):
              "published**, so these numbers cannot be reproduced from this repository. The report holds "
              "counts only: no subject lines, senders or bodies.")
     L.append("")
+    L.append("- %d emails dropped by the junk filter (not routed to INBOX by iCloud, or no DMARC pass)."
+             % c["dropped_by_junk_filter"])
     L.append("- %d emails read, %d after removing duplicates, %d sender domains, %d after keeping at most "
              "%d per sender. %d of them are English by the project's language rule."
              % (c["messages_read"], c["after_dedup"], c["senders"], c["after_sender_cap"],

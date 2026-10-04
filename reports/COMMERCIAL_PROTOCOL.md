@@ -66,3 +66,20 @@ commercial false-alarm rate. Nothing here changes the production model.
   few spam emails may be in the set.
 - **Comparison phishing is older:** Nazario 2019–2024 against promotions that are mostly
   recent, so part of any difference can be a year effect.
+
+## Amendment 1 (2026-10-04, after the export finished, before the first run)
+
+Two rules were added. No result had been seen; the only data inspected were header names
+and counts of system header values (iCloud routing folder, DMARC result), never content.
+
+- **Junk filter.** While copying, some messages were accidentally moved through Junk and back,
+  so spam may be mixed in. An email is kept only if iCloud routed it to `INBOX` on arrival
+  (`X-Apple-Movetofolder`) **and** it passes DMARC. Both are content-blind and were fixed
+  before scoring anything.
+- **Wider masking.** `redact.txt` cannot know iCloud "Hide My Email" relay addresses or
+  addresses encoded in unsubscribe links. So each email's own recipient addresses (from `To`,
+  `Cc`, `Delivered-To`, `X-Original-To`, `Original-Recipient`) are removed from its text in
+  every common encoding: plain, URL-encoded (once and twice), base64 and the local part.
+  Phone numbers, card numbers (including `**** 1234`) and numbers of 10+ digits are removed
+  outside links. Numbers inside links are kept, because the URL features read them; links are
+  never printed or reported.

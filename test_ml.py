@@ -134,6 +134,28 @@ class TestFeatures(unittest.TestCase):
         self.assertEqual(rx.sub("", "Merhaba Efe, Efes indirimi"), "Merhaba , Efes indirimi")
         self.assertIn("İLKER", tr_variants("ilker"))
 
+    def test_mask_personal(self):
+        import base64
+        from email.message import EmailMessage
+        from experiments_commercial import mask_personal, passes_filter
+        m = EmailMessage()
+        m["To"] = "Ayse Yilmaz <abc_def12@icloud.com>"
+        m["X-Apple-Movetofolder"] = "INBOX"
+        m["Authentication-Results"] = "mx; dkim=pass; dmarc=pass header.from=shop.example"
+        b64 = base64.urlsafe_b64encode(b"abc_def12@icloud.com").decode().rstrip("=")
+        text = ("Merhaba abc_def12@icloud.com, kart **** 1234, tel 0532 123 45 67, uye no 12345678901 "
+                "https://shop.example/u?e=abc_def12%40icloud.com&t=" + b64 + "&id=98765432101 "
+                "https://shop.example/p/2024")
+        out = mask_personal(text, m, None)
+        for secret in ["abc_def12", b64, "1234,", "0532", "12345678901"]:
+            self.assertNotIn(secret, out)
+        # URL içindeki numaralar URL feature'ları için kalıyor; kişisel olmayan link aynen kalıyor
+        self.assertIn("id=98765432101", out)
+        self.assertIn("https://shop.example/p/2024", out)
+        self.assertTrue(passes_filter(m))
+        m.replace_header("Authentication-Results", "mx; dmarc=fail")
+        self.assertFalse(passes_filter(m))
+
     def test_preprocess_drops_subject_label_keeps_words(self):
         from ml_model import preprocess
         out = preprocess("Subject: URGENT invoice\n\nThis is subject to change.")
