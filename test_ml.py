@@ -96,6 +96,44 @@ class TestFeatures(unittest.TestCase):
         vals = _url_features(many)[:-1]
         self.assertTrue(all(0.0 <= v <= 1.0 for v in vals))
 
+    def test_html_signals(self):
+        from email.message import EmailMessage
+        from html_signals import html_signals, sender_domain
+
+        def mail(html, plain=None):
+            m = EmailMessage()
+            m["From"] = "Shop <news@mail.shop.example.co.uk>"
+            if plain:
+                m.set_content(plain)
+                m.add_alternative(html, subtype="html")
+            else:
+                m.set_content(html, subtype="html")
+            return m
+
+        phish = html_signals(mail('<a href="http://evil.test/a">https://www.paypal.com/signin</a>'
+                                  '<form><input type="password"></form>'))
+        for s in ["has_html", "html_only", "form", "password_input", "link_text_domain_mismatch",
+                  "brand_text_foreign_link"]:
+            self.assertTrue(phish[s], s)
+        news = html_signals(mail('<div style="display:none">Bu haftanın fırsatları burada, kaçırma!</div>'
+                                 '<img src="a.png"><a href="https://shop.example/x">shop.example</a>',
+                                 plain="Fırsatlar"))
+        self.assertTrue(news["hidden_text"] and news["image_heavy"])
+        self.assertFalse(news["html_only"] or news["link_text_domain_mismatch"] or news["form"])
+        plain = EmailMessage()
+        plain.set_content("just text")
+        self.assertFalse(any(html_signals(plain).values()))
+        self.assertEqual(sender_domain(mail("<p>x</p>")), "example.co.uk")
+
+    def test_redaction_variants(self):
+        import re
+        from experiments_commercial import tr_variants
+        v = tr_variants("efe")
+        self.assertIn("EFE", v)
+        rx = re.compile(r"(?<!\w)(" + "|".join(re.escape(x) for x in v) + r")(?!\w)", re.IGNORECASE)
+        self.assertEqual(rx.sub("", "Merhaba Efe, Efes indirimi"), "Merhaba , Efes indirimi")
+        self.assertIn("İLKER", tr_variants("ilker"))
+
     def test_preprocess_drops_subject_label_keeps_words(self):
         from ml_model import preprocess
         out = preprocess("Subject: URGENT invoice\n\nThis is subject to change.")
