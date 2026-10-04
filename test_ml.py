@@ -187,6 +187,28 @@ class TestFeatures(unittest.TestCase):
         self.assertTrue(s["no_auth_results"] and s["no_dkim_signature"])
         self.assertIsNone(s["dmarc_not_pass"])
 
+    def test_sender_relief(self):
+        from email.message import EmailMessage
+        from header_signals import sender_relief
+
+        def mail(sender, dkim_d, dmarc="pass", reply_to=None):
+            m = EmailMessage()
+            m["From"] = sender
+            m["DKIM-Signature"] = "v=1; d=%s; s=k; b=x" % dkim_d
+            m["Authentication-Results"] = "mx.test; spf=pass; dkim=pass; dmarc=%s" % dmarc
+            if reply_to:
+                m["Reply-To"] = reply_to
+            return m
+
+        ok = mail("News <news@shop.example>", "shop.example")
+        self.assertEqual(sender_relief(ok, "Subject: x\n\nhttps://shop.example/sale"), (True, False))
+        self.assertEqual(sender_relief(mail("a@shop.example", "sendgrid.net"), "x")[0], False)
+        self.assertEqual(sender_relief(mail("a@shop.example", "shop.example", dmarc="fail"), "x")[0], False)
+        # doğrulanmış ama şüpheli: sahte marka domain'i, ücretsiz hosting linki, başka domain'e Reply-To
+        self.assertTrue(sender_relief(mail("a@paypal-secure.example", "paypal-secure.example"), "x")[1])
+        self.assertTrue(sender_relief(ok, "see https://bafy.ipfs.dweb.link/x")[1])
+        self.assertTrue(sender_relief(mail("a@shop.example", "shop.example", reply_to="z@other.test"), "x")[1])
+
     def test_preprocess_drops_subject_label_keeps_words(self):
         from ml_model import preprocess
         out = preprocess("Subject: URGENT invoice\n\nThis is subject to change.")

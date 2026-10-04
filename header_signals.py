@@ -9,7 +9,7 @@
 import re
 from email.utils import getaddresses, parseaddr
 
-from features import registered_domain
+from features import _url_features, brand_in_foreign_domain, registered_domain
 
 MECHANISMS = ["spf", "dkim", "dmarc"]
 SIGNAL_NAMES = [
@@ -81,3 +81,30 @@ def header_signals(msg):
         out[name] = None if res[mech] is None else res[mech] != "pass"
     out["_recorded"] = res
     return out
+
+
+# ---- ikinci aşama (reports/SENDER_STAGE_PROTOCOL.md)
+
+def verified_sender(signals):
+    """Gönderen doğrulanmış: kayıtlı DMARC pass VE From domain'iyle eşleşen DKIM imzası."""
+    return signals["dmarc_not_pass"] is False and not signals["dkim_not_aligned"]
+
+
+def from_host(msg):
+    """From adresinin tam host'u ("a@mail.shop.example" -> "mail.shop.example")."""
+    addr = parseaddr(str(msg.get("From", "") or ""))[1]
+    return addr.rsplit("@", 1)[1].strip(">. ").lower() if "@" in addr else ""
+
+
+def suspicious_sender(host, text, signals):
+    """Doğrulanmış olsa bile rahatlatılmaz: From domain'i sahibi olmadığı bir marka adı taşıyor,
+    punycode, linklerden biri ücretsiz hostingde ya da Reply-To başka bir domain'de."""
+    free_hosting = _url_features(text)[0] > 0
+    return bool((host and brand_in_foreign_domain(host)) or "xn--" in host or free_hosting
+                or signals["reply_to_other_domain"])
+
+
+def sender_relief(msg, text):
+    """(doğrulanmış, şüpheli) - ikinci aşamanın ihtiyacı olan iki bayrak."""
+    s = header_signals(msg)
+    return verified_sender(s), suspicious_sender(from_host(msg), text, s)
