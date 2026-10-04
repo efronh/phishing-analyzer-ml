@@ -127,12 +127,17 @@ def _mask_numbers(chunk):
     return LONG_NUMBER_RE.sub("", CARD_RE.sub("", PHONE_RE.sub("", chunk)))
 
 
-def passes_filter(msg):
+def passes_filter(msg, require_dmarc=True):
     """Junk karışmış olabilir: sadece iCloud'un geldiği anda INBOX'a koyduğu ve DMARC'ı
-    geçen mailler tutulur. İçeriğe bakmayan, önceden sabitlenen kural (protokol, ek 1)."""
+    geçen mailler tutulur. İçeriğe bakmayan, önceden sabitlenen kural (protokol, ek 1).
+    require_dmarc=False: DMARC'ın kendisini ölçen deney için (yoksa oran baştan %100 çıkar)."""
     folder = str(msg.get("X-Apple-Movetofolder", "") or "").strip().upper()
+    if folder != "INBOX":
+        return False
+    if not require_dmarc:
+        return True
     auth = " ".join(str(v) for v in (msg.get_all("Authentication-Results") or [])).lower()
-    return folder == "INBOX" and re.search(r"dmarc=pass\b", auth) is not None
+    return re.search(r"dmarc=pass\b", auth) is not None
 
 
 def promo_mbox_paths():
@@ -153,12 +158,13 @@ def read_mbox_messages(path):
         yield msg
 
 
-def load_promo(redactor):
+def load_promo(redactor, require_dmarc=True, extra=None):
+    """extra: msg -> değer; sonuç row["extra"]'ya konur (ör. başlık kontrolleri)."""
     rows = []
     filtered = 0
     for path in promo_mbox_paths():
         for msg in read_mbox_messages(path):
-            if not passes_filter(msg):
+            if not passes_filter(msg, require_dmarc):
                 filtered = filtered + 1
                 continue
             try:
@@ -169,7 +175,8 @@ def load_promo(redactor):
             if len(text) < 40:
                 continue
             rows.append({"text": text, "label": 0, "source": "own_promo",
-                         "sender": sender_domain(msg), "html": sig})
+                         "sender": sender_domain(msg), "html": sig,
+                         "extra": extra(msg) if extra is not None else None})
     n_raw = len(rows)
     rows = dedup(rows)
     by_sender = {}

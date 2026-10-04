@@ -156,6 +156,37 @@ class TestFeatures(unittest.TestCase):
         m.replace_header("Authentication-Results", "mx; dmarc=fail")
         self.assertFalse(passes_filter(m))
 
+    def test_header_signals(self):
+        from email.message import EmailMessage
+        from header_signals import header_signals, recorded_results
+        legit = EmailMessage()
+        legit["From"] = "Shop <news@mail.shop.example.co.uk>"
+        legit["Return-Path"] = "<bounce@em.shop.example.co.uk>"
+        legit["DKIM-Signature"] = "v=1; a=rsa-sha256; d=shop.example.co.uk; s=k1; b=abc"
+        legit["Authentication-Results"] = "mx.test; spf=pass smtp.mailfrom=x; dkim=pass; dmarc=pass"
+        legit["Authentication-Results"] = "older.test; spf=fail; dmarc=fail"
+        s = header_signals(legit)
+        self.assertEqual(recorded_results(legit), {"spf": "pass", "dkim": "pass", "dmarc": "pass"})
+        for k in ["no_auth_results", "spf_not_pass", "dmarc_not_pass", "no_dkim_signature", "dkim_not_aligned",
+                  "return_path_not_aligned", "reply_to_other_domain", "from_freemail"]:
+            self.assertFalse(s[k], k)
+        phish = EmailMessage()
+        phish["From"] = "PayPal <service@gmail.com>"
+        phish["Reply-To"] = "help@evil.test"
+        phish["Return-Path"] = "<x@bulk.sender.test>"
+        phish["DKIM-Signature"] = "v=1; d=sendgrid.net; s=s1; b=abc"
+        phish["Authentication-Results"] = "mx.test; spf=softfail; dkim=pass; dmarc=fail"
+        s = header_signals(phish)
+        for k in ["spf_not_pass", "dmarc_not_pass", "dkim_not_aligned", "return_path_not_aligned",
+                  "reply_to_other_domain", "from_freemail"]:
+            self.assertTrue(s[k], k)
+        self.assertFalse(s["dkim_not_pass"])
+        bare = EmailMessage()
+        bare["From"] = "a@b.test"
+        s = header_signals(bare)
+        self.assertTrue(s["no_auth_results"] and s["no_dkim_signature"])
+        self.assertIsNone(s["dmarc_not_pass"])
+
     def test_preprocess_drops_subject_label_keeps_words(self):
         from ml_model import preprocess
         out = preprocess("Subject: URGENT invoice\n\nThis is subject to change.")
