@@ -149,6 +149,25 @@ These headers record whether a mail really comes from the domain it shows. They 
 
 Full tables: [`reports/HEADERS.md`](reports/HEADERS.md).
 
+### A second stage for verified senders does not help
+
+The pre-registered design ([protocol](reports/SENDER_STAGE_PROTOCOL.md)) works like this. If the sender is verified and not suspicious (no brand on a foreign domain, no punycode, no free-hosting link, no `Reply-To` elsewhere), the model needs a higher score `t_v` to flag the email. `t_v` comes from training out-of-fold scores.
+
+- **The rule picked `t_v` = the production threshold.** More than 5% of verified training phishing already scores below it, so the stage changes nothing and does not qualify. Nothing ships.
+- **No other bar would work either.** The sensitivity table below is descriptive and does not decide:
+
+| `t_v` | English promotions flagged | Nazario 2025 recall | Hold-out C recall |
+|---|---:|---:|---:|
+| production (0.519) | 87.6% | 99.1% | 93.0% |
+| 0.99 | 43.8% | 90.3% | 87.4% |
+| 0.999 | 29.6% | 84.1% | 85.0% |
+| never alert for verified senders | 8.9% | 55.1% | 75.7% |
+
+- **Verified-sender phishing is common in recent mail.** 58.6% of Nazario 2025 phishing comes from a verified sender, against 27.0% in Nazario 2019–2024 (same collector) and 27.6% in Phishing Pot. Authentication says who sent a mail, not whether it is honest.
+- **So the fix has to come from the text model:** legitimate English marketing mail in training.
+
+Full tables: [`reports/SENDER_STAGE.md`](reports/SENDER_STAGE.md).
+
 ## How false alarms were cut by 25×
 
 The first ML version flagged 25% of Apache release announcements and **half of Ubuntu security notices** as phishing.
@@ -397,6 +416,7 @@ Top ML signals:
 | `html_signals.py` | Language-independent HTML signals (forms, hidden text, link text vs. target). Measured, not used by the model |
 | `header_signals.py` | Sender-authentication checks (recorded SPF/DKIM/DMARC, DKIM and Return-Path alignment). Measured, not used by the model |
 | `experiments_headers.py` | SPF/DKIM/DMARC measurement → `reports/HEADERS.md` (private data) |
+| `experiments_sender_stage.py` | Pre-registered verified-sender second stage → `reports/SENDER_STAGE.md` (private data) |
 | `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
 | `experiments_commercial.py` | Commercial-mail test on private data → `reports/COMMERCIAL.md` (not in `run_all.sh`) |
 | `experiments_url.py` | URL feature comparison (production vs + URL, pre-registered rule) → `reports/URL_FEATURES.md` |
@@ -406,7 +426,7 @@ Top ML signals:
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 61 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 62 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.
@@ -422,6 +442,5 @@ The code is MIT-licensed ([`LICENSE`](LICENSE)). No email data or trained model 
 - **Fix the commercial false alarms first, with English legitimate marketing mail in training.** The P3 diagnostic shows this is the lever; removing Kaggle is not. One source would be a research inbox used only for this project and subscribed to English newsletters, which holds no personal data. A second option is a separate bulk-mail stage before the phishing model, as mail providers do with their Promotions folders.
 - Attachment names and types as features. Many of the missed lures say "see attached".
 - HTML signals (link text vs. link target, forms, hidden text), once there is legitimate HTML mail to train and test on: in the current data 98% of phishing has HTML and almost no legitimate email does, so any HTML feature would learn the source.
-- A second stage for verified senders (DMARC pass and aligned DKIM), designed under its own protocol and tested blind on Phishing Pot. The [measurement](#sender-authentication-spf-dkim-dmarc-measurement-only) shows it could remove most commercial false alarms, but 27% of training phishing also comes from verified senders.
 - A transformer baseline (DistilBERT) to compare against TF-IDF on the hold-outs.
 - Robustness tests: invisible characters, homoglyphs, `hxxp` / `[.]` link obfuscation.

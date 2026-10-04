@@ -1,0 +1,224 @@
+{
+  "t": 0.519,
+  "t_v": 0.519,
+  "n_eligible_training_phishing": 249,
+  "sets": {
+    "hold-out C phishing (Phishing Pot)": {
+      "n": 214,
+      "matched_to_raw": 214,
+      "verified": {
+        "k": 59,
+        "n": 214,
+        "rate": 0.2757,
+        "ci": [
+          0.2202,
+          0.3391
+        ]
+      },
+      "verified_not_suspicious": {
+        "k": 48,
+        "n": 214,
+        "rate": 0.2243,
+        "ci": [
+          0.1736,
+          0.2848
+        ]
+      },
+      "production_flagged": {
+        "k": 199,
+        "n": 214,
+        "rate": 0.9299,
+        "ci": [
+          0.8876,
+          0.9571
+        ]
+      },
+      "stage_flagged": {
+        "k": 199,
+        "n": 214,
+        "rate": 0.9299,
+        "ci": [
+          0.8876,
+          0.9571
+        ]
+      },
+      "mcnemar": {
+        "only_a_correct": 0,
+        "only_b_correct": 0,
+        "p_value": 1.0
+      }
+    },
+    "Nazario 2025 phishing": {
+      "n": 454,
+      "matched_to_raw": 454,
+      "verified": {
+        "k": 266,
+        "n": 454,
+        "rate": 0.5859,
+        "ci": [
+          0.5401,
+          0.6303
+        ]
+      },
+      "verified_not_suspicious": {
+        "k": 202,
+        "n": 454,
+        "rate": 0.4449,
+        "ci": [
+          0.3999,
+          0.4909
+        ]
+      },
+      "production_flagged": {
+        "k": 450,
+        "n": 454,
+        "rate": 0.9912,
+        "ci": [
+          0.9776,
+          0.9966
+        ]
+      },
+      "stage_flagged": {
+        "k": 450,
+        "n": 454,
+        "rate": 0.9912,
+        "ci": [
+          0.9776,
+          0.9966
+        ]
+      },
+      "mcnemar": {
+        "only_a_correct": 0,
+        "only_b_correct": 0,
+        "p_value": 1.0
+      }
+    },
+    "promotions, English": {
+      "n": 169,
+      "matched_to_raw": null,
+      "verified": {
+        "k": 167,
+        "n": 169,
+        "rate": 0.9882,
+        "ci": [
+          0.9579,
+          0.9967
+        ]
+      },
+      "verified_not_suspicious": {
+        "k": 154,
+        "n": 169,
+        "rate": 0.9112,
+        "ci": [
+          0.8587,
+          0.9455
+        ]
+      },
+      "production_flagged": {
+        "k": 148,
+        "n": 169,
+        "rate": 0.8757,
+        "ci": [
+          0.8175,
+          0.9173
+        ]
+      },
+      "stage_flagged": {
+        "k": 148,
+        "n": 169,
+        "rate": 0.8757,
+        "ci": [
+          0.8175,
+          0.9173
+        ]
+      },
+      "mcnemar": {
+        "only_a_correct": 0,
+        "only_b_correct": 0,
+        "p_value": 1.0
+      }
+    },
+    "promotions, all": {
+      "n": 674,
+      "matched_to_raw": null,
+      "verified": {
+        "k": 644,
+        "n": 674,
+        "rate": 0.9555,
+        "ci": [
+          0.9372,
+          0.9686
+        ]
+      },
+      "verified_not_suspicious": {
+        "k": 631,
+        "n": 674,
+        "rate": 0.9362,
+        "ci": [
+          0.9152,
+          0.9523
+        ]
+      },
+      "production_flagged": {
+        "k": 626,
+        "n": 674,
+        "rate": 0.9288,
+        "ci": [
+          0.9068,
+          0.9459
+        ]
+      },
+      "stage_flagged": {
+        "k": 626,
+        "n": 674,
+        "rate": 0.9288,
+        "ci": [
+          0.9068,
+          0.9459
+        ]
+      },
+      "mcnemar": {
+        "only_a_correct": 0,
+        "only_b_correct": 0,
+        "p_value": 1.0
+      }
+    }
+  },
+  "sensitivity": {
+    "hold-out C phishing (Phishing Pot)": {
+      "0.9": 0.8879,
+      "0.95": 0.8832,
+      "0.99": 0.8738,
+      "0.999": 0.8505,
+      "never alert": 0.757
+    },
+    "Nazario 2025 phishing": {
+      "0.9": 0.967,
+      "0.95": 0.9559,
+      "0.99": 0.9031,
+      "0.999": 0.8414,
+      "never alert": 0.5507
+    },
+    "promotions, English": {
+      "0.9": 0.7929,
+      "0.95": 0.7633,
+      "0.99": 0.4379,
+      "0.999": 0.2959,
+      "never alert": 0.0888
+    },
+    "promotions, all": {
+      "0.9": 0.8042,
+      "0.95": 0.7522,
+      "0.99": 0.5861,
+      "0.999": 0.3843,
+      "never alert": 0.0638
+    }
+  },
+  "decision": {
+    "c_recall_not_lower": true,
+    "nazario_2025_recall_not_lower": true,
+    "english_promotions_lower": false,
+    "qualifies": false
+  },
+  "runtime_seconds": 121.2
+}
