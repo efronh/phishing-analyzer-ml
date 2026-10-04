@@ -90,8 +90,11 @@ def _make_classifier(name, C=DEFAULT_C):
 
 
 def build_pipeline(classifier="logreg", use_text=True, use_rules=True, feature_version=2,
-                   C=DEFAULT_C, max_features=DEFAULT_MAX_FEATURES, char_ngram=DEFAULT_CHAR_NGRAM):
-    """use_text / use_rules ile ablation yapılabiliyor (hangi feature grubu ne katıyor)."""
+                   C=DEFAULT_C, max_features=DEFAULT_MAX_FEATURES, char_ngram=DEFAULT_CHAR_NGRAM,
+                   stop_words=None, use_char=True):
+    """use_text / use_rules ile ablation yapılabiliyor (hangi feature grubu ne katıyor).
+    stop_words="english" / use_char=False: "ton" deneyi için (experiments_tone.py); varsayılanlar
+    üretim modelinin ayarı."""
     if not use_text and not use_rules:
         raise ValueError("need at least one feature group")
     if classifier == "nb" and use_rules:
@@ -107,7 +110,9 @@ def build_pipeline(classifier="logreg", use_text=True, use_rules=True, feature_v
             max_df=0.95,
             max_features=max_features,
             sublinear_tf=True,
+            stop_words=stop_words,
         )))
+    if use_text and use_char:
         parts.append(("char", TfidfVectorizer(
             preprocessor=preprocess,
             analyzer="char_wb",
