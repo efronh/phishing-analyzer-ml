@@ -191,6 +191,48 @@ Public legitimate marketing mail does not exist: the one candidate (`marketeam/M
 
 Full tables: [`reports/TONE.md`](reports/TONE.md).
 
+## Source shortcuts: what the model still reads
+
+An exploratory diagnosis, run after the decision-policy study, found that the model still partly recognizes *where* an email came from:
+
+- **Strongest legitimate features:** `enron` (−7.6), the quote marker `>`, `vince`, `2002` and `wrote`.
+- **Strongest phishing features:** `your`, `2005`, `2004` and `spamassassin sightings` (the name of a mailing list).
+- **Why:** every training source holds a single class, so anything that identifies a source also identifies the label.
+- **The shortcut is exploitable.** Thread-hijacking attacks hide phishing inside a real conversation. Appending a fake three-line quoted reply in that style drops recall from 99.1% to 72.9% (Nazario 2025) and from 93.0% to 68.2% (Phishing Pot).
+
+A pre-registered fix removed three families of shortcuts the same way in every source ([protocol](reports/SHORTCUTS_PROTOCOL.md)):
+
+- **Reply structure:** quote lines, "… wrote:" lines, reply and forward headers.
+- **Dates and years.**
+- **Text format:** Kaggle's legitimate mail is lowercased, with spaced punctuation.
+
+| | Production | Cleaned (S) |
+|---|---:|---:|
+| Nazario 2025 recall, with a fake quoted reply (T1) | 72.9% | 98.7% |
+| Hold-out C recall, with a fake quoted reply (T1) | 68.2% | 92.1% |
+| Nazario 2025 recall, with an Outlook-style reply and benign text (T4) | 78.2% | 93.8% |
+| False alarms, A | 1.5% | **3.9%** |
+| False alarms, B | 1.4% | **3.1%** |
+| English promotions flagged | 87.6% | 89.3% |
+
+- **S does not qualify, so production stays.** It closes the exploit, but false alarms on A and B rise significantly (p < 0.001 and p = 0.014).
+- **The low false-alarm rate on mailing lists partly rested on the shortcut** (exploratory, after the result).
+  - 35 of the 42 new false alarms on A are replies whose quote was removed.
+  - What is left is short (median 45 words, against 104 for all of A's legitimate mail), addressed to "you", and often has a link.
+  - To this model, "legitimate" largely meant "quotes earlier mail".
+- **Removing shortcuts makes the model find new ones.** After cleaning, these are among its strongest features:
+  - `713`, Houston's area code: 99% of the emails that contain it are Enron's;
+  - `enron` and `vince`;
+  - `spamassassin sightings`.
+- **Benign padding without quote markers still works on both models.** A plain friendly sentence (T5) costs 4–7 points of recall.
+- **What it means:** the cause is the data, not the text processing. As long as each source holds one class, any trait of a source is a trait of the label. The fix needs two things:
+  - legitimate mail that looks like what phishing imitates;
+  - ideally, sources that contain both classes.
+
+  That is the next step: a research inbox used only for this project.
+
+Full tables, ablations and the source audit: [`reports/SHORTCUTS.md`](reports/SHORTCUTS.md).
+
 ## Sender authentication: SPF, DKIM, DMARC (measurement only)
 
 These headers record whether a mail really comes from the domain it shows. They are **not model features**: the mailing-list archives used as legitimate training mail strip them (0% present), so any header feature would learn the source. The measurement compares training phishing (Nazario 2019–2024, 1,571 emails) with the author's private promotions (676 emails, without the DMARC part of the junk filter). Phishing Pot and the lockbox are kept back for a later blind test ([protocol](reports/HEADERS_PROTOCOL.md)).
@@ -475,6 +517,7 @@ pip install -r requirements.txt
 python evaluate_lockbox.py    # one-time lockbox test (already run; refuses to run again)
 ./download_llm.sh && python experiments_llm.py   # LLM-written phishing test
 python experiments_decision.py   # threshold by cost and phishing share (~2 min)
+python experiments_shortcuts.py  # source shortcuts and the reply-chain test (~12 min)
 python experiments_commercial.py  # needs your own Mail export in data/raw/own_promo/ (see the protocol)
 
 python main.py samples/suspicious_sample.txt --no-dns                       # rules only
@@ -514,6 +557,7 @@ Top ML signals:
 | `experiments_headers.py` | SPF/DKIM/DMARC measurement → `reports/HEADERS.md` (private data) |
 | `experiments_tone.py` | Pre-registered tone experiment (stop words, character n-grams) → `reports/TONE.md` (private data) |
 | `experiments_llm.py` | LLM-written phishing test (Zenodo, Greco) → `reports/LLM_PHISHING.md` |
+| `experiments_shortcuts.py` | Pre-registered removal of source shortcuts (reply structure, dates, text format) and the reply-chain test → `reports/SHORTCUTS.md` (commercial part needs private data) |
 | `experiments_decision.py` | Pre-registered decision policy: threshold by cost and phishing share, analyst review band → `reports/DECISION_POLICY.md` (commercial part needs private data) |
 | `experiments_sender_stage.py` | Pre-registered verified-sender second stage → `reports/SENDER_STAGE.md` (private data) |
 | `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
@@ -525,7 +569,7 @@ Top ML signals:
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 67 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 75 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.

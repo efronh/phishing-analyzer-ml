@@ -1,0 +1,3090 @@
+{
+  "variants": {
+    "P0": [],
+    "S": [
+      "reply",
+      "dates",
+      "format"
+    ],
+    "S without reply removal": [
+      "dates",
+      "format"
+    ],
+    "S without date masking": [
+      "reply",
+      "format"
+    ],
+    "S without format normalization": [
+      "reply",
+      "dates"
+    ]
+  },
+  "candidate": "S",
+  "templates": {
+    "T1": "\n\nOn Tue, Feb 11, 2025 at 3:42 PM Laura Chen <laura.chen@northwind-consulting.com> wrote:\n> Hi, thanks for sending this over.\n> I have shared it with the team and we will review it this week.\n> Best regards, Laura\n",
+    "T2": "\n\nOn Feb 11, 2025, at 15:42, Laura Chen\n<laura.chen@northwind-consulting.com> wrote:\n\n> Hi, thanks for sending this over.\n> I have shared it with the team and we will review it this week.\n",
+    "T3": "\n\n> Hi, thanks for sending this over.\n> I have shared it with the team and we will review it this week.\n> Best regards, Laura\n",
+    "T4": "\n\n-----Original Message-----\nFrom: Laura Chen\nSent: Tuesday, February 11, 2025 3:42 PM\nTo: Accounts Team\nSubject: RE: Q1 budget review\n\nHi, thanks for sending this over. I have shared it with the team and we will review it this week.\n",
+    "T5": "\n\nHi, thanks for sending this over. I have shared it with the team and we will review it this week.\n",
+    "T6": "\n\nThanks,\nLaura\n"
+  },
+  "decision": {
+    "checks": {
+      "robust T1 Nazario 2025": true,
+      "robust T2 Nazario 2025": true,
+      "robust T3 Nazario 2025": true,
+      "recall not lower, Nazario 2025": true,
+      "robust T1 hold-out C": true,
+      "robust T2 hold-out C": true,
+      "robust T3 hold-out C": true,
+      "recall not lower, hold-out C": true,
+      "false alarms not higher, A": false,
+      "false alarms not higher, B": false,
+      "false alarms not higher, C": true,
+      "Zenodo recall not lower": true
+    },
+    "qualifies": false
+  },
+  "results": {
+    "P0": {
+      "cv": {
+        "threshold": 0.519,
+        "fold_f1": [
+          0.98567,
+          0.9825,
+          0.985959,
+          0.982871,
+          0.986224
+        ],
+        "mean_f1": 0.984645,
+        "paired_difference": 0.0,
+        "paired_se": 0.0
+      },
+      "holdouts": {
+        "A": {
+          "recall": {
+            "k": 450,
+            "n": 454,
+            "rate": 0.991189,
+            "ci": [
+              0.9776,
+              0.9966
+            ]
+          },
+          "false_alarms": {
+            "k": 22,
+            "n": 1478,
+            "rate": 0.014885,
+            "ci": [
+              0.0099,
+              0.0224
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 0,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 0,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          }
+        },
+        "B": {
+          "recall": {
+            "k": 450,
+            "n": 454,
+            "rate": 0.991189,
+            "ci": [
+              0.9776,
+              0.9966
+            ]
+          },
+          "false_alarms": {
+            "k": 13,
+            "n": 917,
+            "rate": 0.0141767,
+            "ci": [
+              0.0083,
+              0.0241
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 0,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 0,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          }
+        },
+        "C": {
+          "recall": {
+            "k": 199,
+            "n": 214,
+            "rate": 0.929907,
+            "ci": [
+              0.8876,
+              0.9571
+            ]
+          },
+          "false_alarms": {
+            "k": 3,
+            "n": 767,
+            "rate": 0.00391134,
+            "ci": [
+              0.0013,
+              0.0114
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 0,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 0,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          }
+        }
+      },
+      "templates": {
+        "Nazario 2025": {
+          "none": {
+            "recall": {
+              "k": 450,
+              "n": 454,
+              "rate": 0.991189,
+              "ci": [
+                0.9776,
+                0.9966
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 331,
+              "n": 454,
+              "rate": 0.729075,
+              "ci": [
+                0.6864,
+                0.7679
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 333,
+              "n": 454,
+              "rate": 0.73348,
+              "ci": [
+                0.691,
+                0.7721
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 411,
+              "n": 454,
+              "rate": 0.905286,
+              "ci": [
+                0.8748,
+                0.9289
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 355,
+              "n": 454,
+              "rate": 0.781938,
+              "ci": [
+                0.7417,
+                0.8175
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 420,
+              "n": 454,
+              "rate": 0.92511,
+              "ci": [
+                0.8972,
+                0.9459
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 430,
+              "n": 454,
+              "rate": 0.947137,
+              "ci": [
+                0.9225,
+                0.9642
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          }
+        },
+        "hold-out C": {
+          "none": {
+            "recall": {
+              "k": 199,
+              "n": 214,
+              "rate": 0.929907,
+              "ci": [
+                0.8876,
+                0.9571
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 146,
+              "n": 214,
+              "rate": 0.682243,
+              "ci": [
+                0.6171,
+                0.7409
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 144,
+              "n": 214,
+              "rate": 0.672897,
+              "ci": [
+                0.6075,
+                0.7322
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 178,
+              "n": 214,
+              "rate": 0.831776,
+              "ci": [
+                0.7759,
+                0.8759
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 152,
+              "n": 214,
+              "rate": 0.71028,
+              "ci": [
+                0.6462,
+                0.7669
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 185,
+              "n": 214,
+              "rate": 0.864486,
+              "ci": [
+                0.8122,
+                0.904
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 187,
+              "n": 214,
+              "rate": 0.873832,
+              "ci": [
+                0.8227,
+                0.9118
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 0,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          }
+        }
+      },
+      "zenodo": {
+        "recall": {
+          "k": 4841,
+          "n": 4986,
+          "rate": 0.970919,
+          "ci": [
+            0.9659,
+            0.9752
+          ]
+        },
+        "vs_P0": {
+          "only_a_correct": 0,
+          "only_b_correct": 0,
+          "p_value": 1.0
+        }
+      },
+      "promotions": {
+        "English": {
+          "k": 148,
+          "n": 169,
+          "rate": 0.87574,
+          "ci": [
+            0.8175,
+            0.9173
+          ]
+        },
+        "all": {
+          "k": 626,
+          "n": 674,
+          "rate": 0.928783,
+          "ci": [
+            0.9068,
+            0.9459
+          ]
+        }
+      },
+      "same_genre_auc": {
+        "English promotions vs Nazario 2025": {
+          "auc": 0.779358,
+          "ci": [
+            0.739525,
+            0.817731
+          ]
+        },
+        "English promotions vs hold-out C": {
+          "auc": 0.660897,
+          "ci": [
+            0.603133,
+            0.714402
+          ]
+        }
+      }
+    },
+    "S": {
+      "cv": {
+        "threshold": 0.538,
+        "fold_f1": [
+          0.979401,
+          0.979003,
+          0.981886,
+          0.976918,
+          0.981818
+        ],
+        "mean_f1": 0.979805,
+        "paired_difference": -0.00483956,
+        "paired_se": 0.000541408
+      },
+      "holdouts": {
+        "A": {
+          "recall": {
+            "k": 448,
+            "n": 454,
+            "rate": 0.986784,
+            "ci": [
+              0.9715,
+              0.9939
+            ]
+          },
+          "false_alarms": {
+            "k": 58,
+            "n": 1478,
+            "rate": 0.0392422,
+            "ci": [
+              0.0305,
+              0.0504
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 3,
+            "p_value": 0.625
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 6,
+            "only_b_correct": 42,
+            "p_value": 0.0
+          }
+        },
+        "B": {
+          "recall": {
+            "k": 448,
+            "n": 454,
+            "rate": 0.986784,
+            "ci": [
+              0.9715,
+              0.9939
+            ]
+          },
+          "false_alarms": {
+            "k": 28,
+            "n": 917,
+            "rate": 0.0305344,
+            "ci": [
+              0.0212,
+              0.0438
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 3,
+            "p_value": 0.625
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 9,
+            "only_b_correct": 24,
+            "p_value": 0.0135
+          }
+        },
+        "C": {
+          "recall": {
+            "k": 197,
+            "n": 214,
+            "rate": 0.920561,
+            "ci": [
+              0.8765,
+              0.9498
+            ]
+          },
+          "false_alarms": {
+            "k": 2,
+            "n": 767,
+            "rate": 0.00260756,
+            "ci": [
+              0.0007,
+              0.0095
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 4,
+            "only_b_correct": 6,
+            "p_value": 0.7539
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 3,
+            "only_b_correct": 2,
+            "p_value": 1.0
+          }
+        }
+      },
+      "templates": {
+        "Nazario 2025": {
+          "none": {
+            "recall": {
+              "k": 448,
+              "n": 454,
+              "rate": 0.986784,
+              "ci": [
+                0.9715,
+                0.9939
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 1,
+              "only_b_correct": 3,
+              "p_value": 0.625
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 448,
+              "n": 454,
+              "rate": 0.986784,
+              "ci": [
+                0.9715,
+                0.9939
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 117,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 448,
+              "n": 454,
+              "rate": 0.986784,
+              "ci": [
+                0.9715,
+                0.9939
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 115,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 448,
+              "n": 454,
+              "rate": 0.986784,
+              "ci": [
+                0.9715,
+                0.9939
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 38,
+              "only_b_correct": 1,
+              "p_value": 0.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 426,
+              "n": 454,
+              "rate": 0.938326,
+              "ci": [
+                0.9123,
+                0.957
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 71,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 426,
+              "n": 454,
+              "rate": 0.938326,
+              "ci": [
+                0.9123,
+                0.957
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 10,
+              "only_b_correct": 4,
+              "p_value": 0.1796
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 432,
+              "n": 454,
+              "rate": 0.951542,
+              "ci": [
+                0.9277,
+                0.9678
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 4,
+              "p_value": 0.7539
+            }
+          }
+        },
+        "hold-out C": {
+          "none": {
+            "recall": {
+              "k": 197,
+              "n": 214,
+              "rate": 0.920561,
+              "ci": [
+                0.8765,
+                0.9498
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 4,
+              "only_b_correct": 6,
+              "p_value": 0.7539
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 197,
+              "n": 214,
+              "rate": 0.920561,
+              "ci": [
+                0.8765,
+                0.9498
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 53,
+              "only_b_correct": 2,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 197,
+              "n": 214,
+              "rate": 0.920561,
+              "ci": [
+                0.8765,
+                0.9498
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 55,
+              "only_b_correct": 2,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 197,
+              "n": 214,
+              "rate": 0.920561,
+              "ci": [
+                0.8765,
+                0.9498
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 21,
+              "only_b_correct": 2,
+              "p_value": 0.0001
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 189,
+              "n": 214,
+              "rate": 0.883178,
+              "ci": [
+                0.8332,
+                0.9196
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 39,
+              "only_b_correct": 2,
+              "p_value": 0.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 189,
+              "n": 214,
+              "rate": 0.883178,
+              "ci": [
+                0.8332,
+                0.9196
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 7,
+              "only_b_correct": 3,
+              "p_value": 0.3438
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 188,
+              "n": 214,
+              "rate": 0.878505,
+              "ci": [
+                0.8279,
+                0.9157
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 5,
+              "p_value": 1.0
+            }
+          }
+        }
+      },
+      "zenodo": {
+        "recall": {
+          "k": 4901,
+          "n": 4986,
+          "rate": 0.982952,
+          "ci": [
+            0.979,
+            0.9862
+          ]
+        },
+        "vs_P0": {
+          "only_a_correct": 61,
+          "only_b_correct": 1,
+          "p_value": 0.0
+        }
+      },
+      "promotions": {
+        "English": {
+          "k": 151,
+          "n": 169,
+          "rate": 0.893491,
+          "ci": [
+            0.8379,
+            0.9316
+          ]
+        },
+        "all": {
+          "k": 604,
+          "n": 674,
+          "rate": 0.896142,
+          "ci": [
+            0.8708,
+            0.917
+          ]
+        }
+      },
+      "same_genre_auc": {
+        "English promotions vs Nazario 2025": {
+          "auc": 0.762714,
+          "ci": [
+            0.724273,
+            0.800786
+          ]
+        },
+        "English promotions vs hold-out C": {
+          "auc": 0.620555,
+          "ci": [
+            0.559557,
+            0.676993
+          ]
+        }
+      }
+    },
+    "S without reply removal": {
+      "cv": {
+        "threshold": 0.4795,
+        "fold_f1": [
+          0.983188,
+          0.977528,
+          0.981931,
+          0.979744,
+          0.981841
+        ],
+        "mean_f1": 0.980847,
+        "paired_difference": -0.00379835,
+        "paired_se": 0.000444766
+      },
+      "holdouts": {
+        "A": {
+          "recall": {
+            "k": 450,
+            "n": 454,
+            "rate": 0.991189,
+            "ci": [
+              0.9776,
+              0.9966
+            ]
+          },
+          "false_alarms": {
+            "k": 27,
+            "n": 1478,
+            "rate": 0.0182679,
+            "ci": [
+              0.0126,
+              0.0264
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 1,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 3,
+            "only_b_correct": 8,
+            "p_value": 0.2266
+          }
+        },
+        "B": {
+          "recall": {
+            "k": 450,
+            "n": 454,
+            "rate": 0.991189,
+            "ci": [
+              0.9776,
+              0.9966
+            ]
+          },
+          "false_alarms": {
+            "k": 29,
+            "n": 917,
+            "rate": 0.0316249,
+            "ci": [
+              0.0221,
+              0.045
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 1,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 4,
+            "only_b_correct": 20,
+            "p_value": 0.0015
+          }
+        },
+        "C": {
+          "recall": {
+            "k": 203,
+            "n": 214,
+            "rate": 0.948598,
+            "ci": [
+              0.9103,
+              0.9711
+            ]
+          },
+          "false_alarms": {
+            "k": 2,
+            "n": 767,
+            "rate": 0.00260756,
+            "ci": [
+              0.0007,
+              0.0095
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 6,
+            "only_b_correct": 2,
+            "p_value": 0.2891
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 2,
+            "only_b_correct": 1,
+            "p_value": 1.0
+          }
+        }
+      },
+      "templates": {
+        "Nazario 2025": {
+          "none": {
+            "recall": {
+              "k": 450,
+              "n": 454,
+              "rate": 0.991189,
+              "ci": [
+                0.9776,
+                0.9966
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 1,
+              "only_b_correct": 1,
+              "p_value": 1.0
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 364,
+              "n": 454,
+              "rate": 0.801762,
+              "ci": [
+                0.7626,
+                0.8358
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 33,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 362,
+              "n": 454,
+              "rate": 0.797357,
+              "ci": [
+                0.758,
+                0.8318
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 31,
+              "only_b_correct": 2,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 424,
+              "n": 454,
+              "rate": 0.933921,
+              "ci": [
+                0.9072,
+                0.9533
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 16,
+              "only_b_correct": 3,
+              "p_value": 0.0044
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 364,
+              "n": 454,
+              "rate": 0.801762,
+              "ci": [
+                0.7626,
+                0.8358
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 13,
+              "only_b_correct": 4,
+              "p_value": 0.049
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 421,
+              "n": 454,
+              "rate": 0.927313,
+              "ci": [
+                0.8997,
+                0.9478
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 5,
+              "p_value": 1.0
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 430,
+              "n": 454,
+              "rate": 0.947137,
+              "ci": [
+                0.9225,
+                0.9642
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 6,
+              "p_value": 1.0
+            }
+          }
+        },
+        "hold-out C": {
+          "none": {
+            "recall": {
+              "k": 203,
+              "n": 214,
+              "rate": 0.948598,
+              "ci": [
+                0.9103,
+                0.9711
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 2,
+              "p_value": 0.2891
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 156,
+              "n": 214,
+              "rate": 0.728972,
+              "ci": [
+                0.6658,
+                0.7841
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 13,
+              "only_b_correct": 3,
+              "p_value": 0.0213
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 154,
+              "n": 214,
+              "rate": 0.719626,
+              "ci": [
+                0.656,
+                0.7755
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 12,
+              "only_b_correct": 2,
+              "p_value": 0.0129
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 192,
+              "n": 214,
+              "rate": 0.897196,
+              "ci": [
+                0.8493,
+                0.9311
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 15,
+              "only_b_correct": 1,
+              "p_value": 0.0005
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 155,
+              "n": 214,
+              "rate": 0.724299,
+              "ci": [
+                0.6609,
+                0.7798
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 3,
+              "p_value": 0.5078
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 192,
+              "n": 214,
+              "rate": 0.897196,
+              "ci": [
+                0.8493,
+                0.9311
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 8,
+              "only_b_correct": 1,
+              "p_value": 0.0391
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 192,
+              "n": 214,
+              "rate": 0.897196,
+              "ci": [
+                0.8493,
+                0.9311
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 1,
+              "p_value": 0.125
+            }
+          }
+        }
+      },
+      "zenodo": {
+        "recall": {
+          "k": 4894,
+          "n": 4986,
+          "rate": 0.981548,
+          "ci": [
+            0.9774,
+            0.9849
+          ]
+        },
+        "vs_P0": {
+          "only_a_correct": 56,
+          "only_b_correct": 3,
+          "p_value": 0.0
+        }
+      },
+      "promotions": {
+        "English": {
+          "k": 158,
+          "n": 169,
+          "rate": 0.934911,
+          "ci": [
+            0.8872,
+            0.9633
+          ]
+        },
+        "all": {
+          "k": 633,
+          "n": 674,
+          "rate": 0.939169,
+          "ci": [
+            0.9185,
+            0.9548
+          ]
+        }
+      },
+      "same_genre_auc": {
+        "English promotions vs Nazario 2025": {
+          "auc": 0.754972,
+          "ci": [
+            0.716684,
+            0.793156
+          ]
+        },
+        "English promotions vs hold-out C": {
+          "auc": 0.62415,
+          "ci": [
+            0.56539,
+            0.679204
+          ]
+        }
+      }
+    },
+    "S without date masking": {
+      "cv": {
+        "threshold": 0.5125,
+        "fold_f1": [
+          0.981285,
+          0.979349,
+          0.981898,
+          0.97818,
+          0.981215
+        ],
+        "mean_f1": 0.980385,
+        "paired_difference": -0.00425971,
+        "paired_se": 0.000318841
+      },
+      "holdouts": {
+        "A": {
+          "recall": {
+            "k": 451,
+            "n": 454,
+            "rate": 0.993392,
+            "ci": [
+              0.9808,
+              0.9978
+            ]
+          },
+          "false_alarms": {
+            "k": 65,
+            "n": 1478,
+            "rate": 0.0439783,
+            "ci": [
+              0.0347,
+              0.0557
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 3,
+            "only_b_correct": 46,
+            "p_value": 0.0
+          }
+        },
+        "B": {
+          "recall": {
+            "k": 451,
+            "n": 454,
+            "rate": 0.993392,
+            "ci": [
+              0.9808,
+              0.9978
+            ]
+          },
+          "false_alarms": {
+            "k": 49,
+            "n": 917,
+            "rate": 0.0534351,
+            "ci": [
+              0.0407,
+              0.0699
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 0,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 1,
+            "only_b_correct": 37,
+            "p_value": 0.0
+          }
+        },
+        "C": {
+          "recall": {
+            "k": 196,
+            "n": 214,
+            "rate": 0.915888,
+            "ci": [
+              0.871,
+              0.9461
+            ]
+          },
+          "false_alarms": {
+            "k": 1,
+            "n": 767,
+            "rate": 0.00130378,
+            "ci": [
+              0.0002,
+              0.0073
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 4,
+            "only_b_correct": 7,
+            "p_value": 0.5488
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 3,
+            "only_b_correct": 1,
+            "p_value": 0.625
+          }
+        }
+      },
+      "templates": {
+        "Nazario 2025": {
+          "none": {
+            "recall": {
+              "k": 451,
+              "n": 454,
+              "rate": 0.993392,
+              "ci": [
+                0.9808,
+                0.9978
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 1,
+              "only_b_correct": 0,
+              "p_value": 1.0
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 451,
+              "n": 454,
+              "rate": 0.993392,
+              "ci": [
+                0.9808,
+                0.9978
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 120,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 451,
+              "n": 454,
+              "rate": 0.993392,
+              "ci": [
+                0.9808,
+                0.9978
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 118,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 451,
+              "n": 454,
+              "rate": 0.993392,
+              "ci": [
+                0.9808,
+                0.9978
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 40,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 430,
+              "n": 454,
+              "rate": 0.947137,
+              "ci": [
+                0.9225,
+                0.9642
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 75,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 430,
+              "n": 454,
+              "rate": 0.947137,
+              "ci": [
+                0.9225,
+                0.9642
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 11,
+              "only_b_correct": 1,
+              "p_value": 0.0063
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 437,
+              "n": 454,
+              "rate": 0.962555,
+              "ci": [
+                0.9409,
+                0.9765
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 8,
+              "only_b_correct": 1,
+              "p_value": 0.0391
+            }
+          }
+        },
+        "hold-out C": {
+          "none": {
+            "recall": {
+              "k": 196,
+              "n": 214,
+              "rate": 0.915888,
+              "ci": [
+                0.871,
+                0.9461
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 4,
+              "only_b_correct": 7,
+              "p_value": 0.5488
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 196,
+              "n": 214,
+              "rate": 0.915888,
+              "ci": [
+                0.871,
+                0.9461
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 51,
+              "only_b_correct": 1,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 196,
+              "n": 214,
+              "rate": 0.915888,
+              "ci": [
+                0.871,
+                0.9461
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 53,
+              "only_b_correct": 1,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 196,
+              "n": 214,
+              "rate": 0.915888,
+              "ci": [
+                0.871,
+                0.9461
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 19,
+              "only_b_correct": 1,
+              "p_value": 0.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 189,
+              "n": 214,
+              "rate": 0.883178,
+              "ci": [
+                0.8332,
+                0.9196
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 38,
+              "only_b_correct": 1,
+              "p_value": 0.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 189,
+              "n": 214,
+              "rate": 0.883178,
+              "ci": [
+                0.8332,
+                0.9196
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 2,
+              "p_value": 0.2891
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 189,
+              "n": 214,
+              "rate": 0.883178,
+              "ci": [
+                0.8332,
+                0.9196
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 4,
+              "only_b_correct": 2,
+              "p_value": 0.6875
+            }
+          }
+        }
+      },
+      "zenodo": {
+        "recall": {
+          "k": 4890,
+          "n": 4986,
+          "rate": 0.980746,
+          "ci": [
+            0.9765,
+            0.9842
+          ]
+        },
+        "vs_P0": {
+          "only_a_correct": 54,
+          "only_b_correct": 5,
+          "p_value": 0.0
+        }
+      },
+      "promotions": {
+        "English": {
+          "k": 153,
+          "n": 169,
+          "rate": 0.905325,
+          "ci": [
+            0.8517,
+            0.9409
+          ]
+        },
+        "all": {
+          "k": 617,
+          "n": 674,
+          "rate": 0.91543,
+          "ci": [
+            0.892,
+            0.9342
+          ]
+        }
+      },
+      "same_genre_auc": {
+        "English promotions vs Nazario 2025": {
+          "auc": 0.745758,
+          "ci": [
+            0.706006,
+            0.784733
+          ]
+        },
+        "English promotions vs hold-out C": {
+          "auc": 0.596997,
+          "ci": [
+            0.536975,
+            0.655257
+          ]
+        }
+      }
+    },
+    "S without format normalization": {
+      "cv": {
+        "threshold": 0.479,
+        "fold_f1": [
+          0.982565,
+          0.981614,
+          0.983484,
+          0.980075,
+          0.983104
+        ],
+        "mean_f1": 0.982168,
+        "paired_difference": -0.00247653,
+        "paired_se": 0.000414825
+      },
+      "holdouts": {
+        "A": {
+          "recall": {
+            "k": 450,
+            "n": 454,
+            "rate": 0.991189,
+            "ci": [
+              0.9776,
+              0.9966
+            ]
+          },
+          "false_alarms": {
+            "k": 63,
+            "n": 1478,
+            "rate": 0.0426252,
+            "ci": [
+              0.0335,
+              0.0542
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 1,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 5,
+            "only_b_correct": 46,
+            "p_value": 0.0
+          }
+        },
+        "B": {
+          "recall": {
+            "k": 450,
+            "n": 454,
+            "rate": 0.991189,
+            "ci": [
+              0.9776,
+              0.9966
+            ]
+          },
+          "false_alarms": {
+            "k": 21,
+            "n": 917,
+            "rate": 0.0229008,
+            "ci": [
+              0.015,
+              0.0348
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 1,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 7,
+            "only_b_correct": 15,
+            "p_value": 0.1338
+          }
+        },
+        "C": {
+          "recall": {
+            "k": 198,
+            "n": 214,
+            "rate": 0.925234,
+            "ci": [
+              0.882,
+              0.9535
+            ]
+          },
+          "false_alarms": {
+            "k": 4,
+            "n": 767,
+            "rate": 0.00521512,
+            "ci": [
+              0.002,
+              0.0133
+            ]
+          },
+          "vs_P0_phishing": {
+            "only_a_correct": 1,
+            "only_b_correct": 2,
+            "p_value": 1.0
+          },
+          "vs_P0_legit": {
+            "only_a_correct": 2,
+            "only_b_correct": 3,
+            "p_value": 1.0
+          }
+        }
+      },
+      "templates": {
+        "Nazario 2025": {
+          "none": {
+            "recall": {
+              "k": 450,
+              "n": 454,
+              "rate": 0.991189,
+              "ci": [
+                0.9776,
+                0.9966
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 1,
+              "only_b_correct": 1,
+              "p_value": 1.0
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 450,
+              "n": 454,
+              "rate": 0.991189,
+              "ci": [
+                0.9776,
+                0.9966
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 119,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 450,
+              "n": 454,
+              "rate": 0.991189,
+              "ci": [
+                0.9776,
+                0.9966
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 117,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 450,
+              "n": 454,
+              "rate": 0.991189,
+              "ci": [
+                0.9776,
+                0.9966
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 39,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 427,
+              "n": 454,
+              "rate": 0.940529,
+              "ci": [
+                0.9149,
+                0.9588
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 72,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 427,
+              "n": 454,
+              "rate": 0.940529,
+              "ci": [
+                0.9149,
+                0.9588
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 8,
+              "only_b_correct": 1,
+              "p_value": 0.0391
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 433,
+              "n": 454,
+              "rate": 0.953744,
+              "ci": [
+                0.9303,
+                0.9695
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 6,
+              "only_b_correct": 3,
+              "p_value": 0.5078
+            }
+          }
+        },
+        "hold-out C": {
+          "none": {
+            "recall": {
+              "k": 198,
+              "n": 214,
+              "rate": 0.925234,
+              "ci": [
+                0.882,
+                0.9535
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 1,
+              "only_b_correct": 2,
+              "p_value": 1.0
+            }
+          },
+          "T1": {
+            "recall": {
+              "k": 198,
+              "n": 214,
+              "rate": 0.925234,
+              "ci": [
+                0.882,
+                0.9535
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 52,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T2": {
+            "recall": {
+              "k": 198,
+              "n": 214,
+              "rate": 0.925234,
+              "ci": [
+                0.882,
+                0.9535
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 54,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T3": {
+            "recall": {
+              "k": 198,
+              "n": 214,
+              "rate": 0.925234,
+              "ci": [
+                0.882,
+                0.9535
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 20,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T4": {
+            "recall": {
+              "k": 192,
+              "n": 214,
+              "rate": 0.897196,
+              "ci": [
+                0.8493,
+                0.9311
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 40,
+              "only_b_correct": 0,
+              "p_value": 0.0
+            }
+          },
+          "T5": {
+            "recall": {
+              "k": 192,
+              "n": 214,
+              "rate": 0.897196,
+              "ci": [
+                0.8493,
+                0.9311
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 7,
+              "only_b_correct": 0,
+              "p_value": 0.0156
+            }
+          },
+          "T6": {
+            "recall": {
+              "k": 192,
+              "n": 214,
+              "rate": 0.897196,
+              "ci": [
+                0.8493,
+                0.9311
+              ]
+            },
+            "vs_P0": {
+              "only_a_correct": 5,
+              "only_b_correct": 0,
+              "p_value": 0.0625
+            }
+          }
+        }
+      },
+      "zenodo": {
+        "recall": {
+          "k": 4866,
+          "n": 4986,
+          "rate": 0.975933,
+          "ci": [
+            0.9713,
+            0.9798
+          ]
+        },
+        "vs_P0": {
+          "only_a_correct": 27,
+          "only_b_correct": 2,
+          "p_value": 0.0
+        }
+      },
+      "promotions": {
+        "English": {
+          "k": 149,
+          "n": 169,
+          "rate": 0.881657,
+          "ci": [
+            0.8243,
+            0.9221
+          ]
+        },
+        "all": {
+          "k": 626,
+          "n": 674,
+          "rate": 0.928783,
+          "ci": [
+            0.9068,
+            0.9459
+          ]
+        }
+      },
+      "same_genre_auc": {
+        "English promotions vs Nazario 2025": {
+          "auc": 0.776595,
+          "ci": [
+            0.737141,
+            0.814744
+          ]
+        },
+        "English promotions vs hold-out C": {
+          "auc": 0.643505,
+          "ci": [
+            0.584717,
+            0.698761
+          ]
+        }
+      }
+    }
+  },
+  "audit": {
+    "P0": {
+      "phishing": [
+        [
+          "word__your",
+          5.40522,
+          {
+            "emails": 9277,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.444001
+          }
+        ],
+        [
+          "word__2005",
+          4.67265,
+          {
+            "emails": 458,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.962882
+          }
+        ],
+        [
+          "word__http",
+          3.70149,
+          {
+            "emails": 2832,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.57274
+          }
+        ],
+        [
+          "word__you",
+          3.56809,
+          {
+            "emails": 12993,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.355191
+          }
+        ],
+        [
+          "word__email",
+          3.35667,
+          {
+            "emails": 4700,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.401064
+          }
+        ],
+        [
+          "word__mobile",
+          3.24401,
+          {
+            "emails": 411,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.547445
+          }
+        ],
+        [
+          "word__2023",
+          3.08743,
+          {
+            "emails": 283,
+            "top_corpus": "Nazario 2019–2024",
+            "top_share": 0.780919
+          }
+        ],
+        [
+          "word__2004",
+          2.88071,
+          {
+            "emails": 394,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.92132
+          }
+        ],
+        [
+          "char__your",
+          2.81827,
+          {
+            "emails": 9520,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.446534
+          }
+        ],
+        [
+          "char__ your",
+          2.75765,
+          {
+            "emails": 9480,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.44673
+          }
+        ],
+        [
+          "word__no",
+          2.75622,
+          {
+            "emails": 5723,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.394374
+          }
+        ],
+        [
+          "char__% ",
+          2.75398,
+          {
+            "emails": 2476,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.699515
+          }
+        ],
+        [
+          "word__remove",
+          2.70145,
+          {
+            "emails": 1197,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.715957
+          }
+        ],
+        [
+          "word__here",
+          2.64217,
+          {
+            "emails": 4943,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.51669
+          }
+        ],
+        [
+          "char__your ",
+          2.54058,
+          {
+            "emails": 9286,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.444109
+          }
+        ],
+        [
+          "char__。 ",
+          2.51711,
+          {
+            "emails": 32,
+            "top_corpus": "Nazario 2019–2024",
+            "top_share": 0.9375
+          }
+        ],
+        [
+          "word__delivery",
+          2.4983,
+          {
+            "emails": 650,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.384615
+          }
+        ],
+        [
+          "word__site",
+          2.48941,
+          {
+            "emails": 1699,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.520895
+          }
+        ],
+        [
+          "char__ yo",
+          2.48657,
+          {
+            "emails": 14969,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.357806
+          }
+        ],
+        [
+          "char__ you",
+          2.47421,
+          {
+            "emails": 14735,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.36152
+          }
+        ],
+        [
+          "char__ % ",
+          2.4606,
+          {
+            "emails": 1723,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.767847
+          }
+        ],
+        [
+          "char__you",
+          2.45983,
+          {
+            "emails": 14823,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.360656
+          }
+        ],
+        [
+          "char__ med",
+          2.45745,
+          {
+            "emails": 1658,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.65199
+          }
+        ],
+        [
+          "word__life",
+          2.4089,
+          {
+            "emails": 1107,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.63776
+          }
+        ],
+        [
+          "char__ur ",
+          2.39995,
+          {
+            "emails": 12019,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.403278
+          }
+        ],
+        [
+          "word__hello",
+          2.38295,
+          {
+            "emails": 905,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.476243
+          }
+        ],
+        [
+          "char__our ",
+          2.36765,
+          {
+            "emails": 11688,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.408111
+          }
+        ],
+        [
+          "word__to you",
+          2.36534,
+          {
+            "emails": 1404,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.603989
+          }
+        ],
+        [
+          "char__ t ",
+          2.36251,
+          {
+            "emails": 2236,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.511628
+          }
+        ],
+        [
+          "word__spamassassin sightings",
+          2.35173,
+          {
+            "emails": 147,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.986395
+          }
+        ]
+      ],
+      "legitimate": [
+        [
+          "word__enron",
+          -7.55054,
+          {
+            "emails": 2246,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.991541
+          }
+        ],
+        [
+          "char__ >",
+          -5.60631,
+          {
+            "emails": 4666,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.488213
+          }
+        ],
+        [
+          "char__> ",
+          -5.37196,
+          {
+            "emails": 5662,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.445426
+          }
+        ],
+        [
+          "word__the",
+          -5.31907,
+          {
+            "emails": 17622,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.34718
+          }
+        ],
+        [
+          "char__ > ",
+          -5.25935,
+          {
+            "emails": 4322,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.470384
+          }
+        ],
+        [
+          "word__vince",
+          -4.12122,
+          {
+            "emails": 807,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.982652
+          }
+        ],
+        [
+          "char__enr",
+          -4.10717,
+          {
+            "emails": 2607,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.946298
+          }
+        ],
+        [
+          "char__ enr",
+          -4.08272,
+          {
+            "emails": 2415,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.967702
+          }
+        ],
+        [
+          "char__nro",
+          -4.04286,
+          {
+            "emails": 2400,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.95875
+          }
+        ],
+        [
+          "char__ enro",
+          -4.03142,
+          {
+            "emails": 2344,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.974403
+          }
+        ],
+        [
+          "word__2002",
+          -4.02804,
+          {
+            "emails": 2749,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.784285
+          }
+        ],
+        [
+          "char__enro",
+          -4.02614,
+          {
+            "emails": 2361,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.968657
+          }
+        ],
+        [
+          "char__enron",
+          -3.95611,
+          {
+            "emails": 2285,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.991247
+          }
+        ],
+        [
+          "char__nron",
+          -3.95598,
+          {
+            "emails": 2286,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.991251
+          }
+        ],
+        [
+          "char__nron ",
+          -3.83839,
+          {
+            "emails": 2239,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.99464
+          }
+        ],
+        [
+          "word__thanks",
+          -3.70714,
+          {
+            "emails": 3006,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.61976
+          }
+        ],
+        [
+          "char__nr",
+          -3.62588,
+          {
+            "emails": 3329,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.811355
+          }
+        ],
+        [
+          "char__ i ",
+          -3.58926,
+          {
+            "emails": 9117,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.40781
+          }
+        ],
+        [
+          "word__url",
+          -3.56236,
+          {
+            "emails": 1567,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.437141
+          }
+        ],
+        [
+          "word__wrote",
+          -3.54957,
+          {
+            "emails": 2517,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.553039
+          }
+        ],
+        [
+          "word__urltoken date",
+          -3.47332,
+          {
+            "emails": 649,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.922958
+          }
+        ],
+        [
+          "word__louise",
+          -3.46566,
+          {
+            "emails": 543,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.992634
+          }
+        ],
+        [
+          "word__2000",
+          -3.33318,
+          {
+            "emails": 1646,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.801337
+          }
+        ],
+        [
+          "word__enron com",
+          -3.32981,
+          {
+            "emails": 686,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 1.0
+          }
+        ],
+        [
+          "char__ron ",
+          -3.3129,
+          {
+            "emails": 2833,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.837981
+          }
+        ],
+        [
+          "word__url urltoken",
+          -3.2884,
+          {
+            "emails": 1212,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.522277
+          }
+        ],
+        [
+          "word__python",
+          -3.26642,
+          {
+            "emails": 687,
+            "top_corpus": "Mailing lists 2024",
+            "top_share": 0.898108
+          }
+        ],
+        [
+          "word__on",
+          -3.25582,
+          {
+            "emails": 13090,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.36356
+          }
+        ],
+        [
+          "char__e: ",
+          -3.13891,
+          {
+            "emails": 6126,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.538688
+          }
+        ],
+        [
+          "word__at",
+          -3.10865,
+          {
+            "emails": 9565,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.363513
+          }
+        ]
+      ]
+    },
+    "S": {
+      "phishing": [
+        [
+          "word__your",
+          5.93349,
+          {
+            "emails": 8920,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.461547
+          }
+        ],
+        [
+          "word__http",
+          4.61334,
+          {
+            "emails": 2764,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.586831
+          }
+        ],
+        [
+          "word__mobile",
+          3.655,
+          {
+            "emails": 406,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.554187
+          }
+        ],
+        [
+          "word__you",
+          3.43278,
+          {
+            "emails": 12332,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.374149
+          }
+        ],
+        [
+          "word__email",
+          3.20104,
+          {
+            "emails": 4574,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.411675
+          }
+        ],
+        [
+          "char__your",
+          3.19889,
+          {
+            "emails": 9150,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.464372
+          }
+        ],
+        [
+          "char__ your",
+          3.17157,
+          {
+            "emails": 9136,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.463989
+          }
+        ],
+        [
+          "word__here",
+          3.16738,
+          {
+            "emails": 4672,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.546447
+          }
+        ],
+        [
+          "word__hello",
+          3.04229,
+          {
+            "emails": 814,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.529484
+          }
+        ],
+        [
+          "word__spamassassin sightings",
+          2.93546,
+          {
+            "emails": 146,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.993151
+          }
+        ],
+        [
+          "char__your ",
+          2.92552,
+          {
+            "emails": 8928,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.461694
+          }
+        ],
+        [
+          "word__remove",
+          2.89176,
+          {
+            "emails": 1135,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.754185
+          }
+        ],
+        [
+          "char__our ",
+          2.82118,
+          {
+            "emails": 11313,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.42155
+          }
+        ],
+        [
+          "word__for you",
+          2.82082,
+          {
+            "emails": 1187,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.686605
+          }
+        ],
+        [
+          "word__site",
+          2.818,
+          {
+            "emails": 1646,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.537667
+          }
+        ],
+        [
+          "word__sightings",
+          2.81747,
+          {
+            "emails": 154,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.941558
+          }
+        ],
+        [
+          "word__no",
+          2.80459,
+          {
+            "emails": 5279,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.427354
+          }
+        ],
+        [
+          "char__ur ",
+          2.79826,
+          {
+            "emails": 11629,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.416717
+          }
+        ],
+        [
+          "char__ yo",
+          2.76456,
+          {
+            "emails": 14343,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.373841
+          }
+        ],
+        [
+          "char__ you",
+          2.73825,
+          {
+            "emails": 14104,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.377765
+          }
+        ],
+        [
+          "char__you",
+          2.71915,
+          {
+            "emails": 14164,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.377365
+          }
+        ],
+        [
+          "word__delivery",
+          2.6469,
+          {
+            "emails": 641,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.390016
+          }
+        ],
+        [
+          "word__to you",
+          2.62168,
+          {
+            "emails": 1391,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.609633
+          }
+        ],
+        [
+          "char__yo",
+          2.58856,
+          {
+            "emails": 14991,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.365753
+          }
+        ],
+        [
+          "word__utf",
+          2.5787,
+          {
+            "emails": 65,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.615385
+          }
+        ],
+        [
+          "word__our",
+          2.56843,
+          {
+            "emails": 5442,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.528666
+          }
+        ],
+        [
+          "char__ med",
+          2.55514,
+          {
+            "emails": 1666,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.651861
+          }
+        ],
+        [
+          "word__em",
+          2.55125,
+          {
+            "emails": 169,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.650888
+          }
+        ],
+        [
+          "char__% ",
+          2.50417,
+          {
+            "emails": 2618,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.681054
+          }
+        ],
+        [
+          "char__ % ",
+          2.50417,
+          {
+            "emails": 2618,
+            "top_corpus": "Kaggle phishing",
+            "top_share": 0.681054
+          }
+        ]
+      ],
+      "legitimate": [
+        [
+          "word__enron",
+          -7.60514,
+          {
+            "emails": 2213,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.991866
+          }
+        ],
+        [
+          "word__the",
+          -5.28765,
+          {
+            "emails": 17186,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.355929
+          }
+        ],
+        [
+          "char__ i ",
+          -4.50465,
+          {
+            "emails": 9050,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.412044
+          }
+        ],
+        [
+          "char__ \"",
+          -4.17275,
+          {
+            "emails": 6377,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.327113
+          }
+        ],
+        [
+          "char__\" ",
+          -4.17275,
+          {
+            "emails": 6377,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.327113
+          }
+        ],
+        [
+          "char__ \" ",
+          -4.17275,
+          {
+            "emails": 6377,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.327113
+          }
+        ],
+        [
+          "char__enr",
+          -4.0807,
+          {
+            "emails": 2576,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.946429
+          }
+        ],
+        [
+          "char__ enr",
+          -4.05124,
+          {
+            "emails": 2385,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.967715
+          }
+        ],
+        [
+          "char__nro",
+          -4.00998,
+          {
+            "emails": 2369,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.959054
+          }
+        ],
+        [
+          "char__enro",
+          -3.99586,
+          {
+            "emails": 2330,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.969099
+          }
+        ],
+        [
+          "char__ enro",
+          -3.99242,
+          {
+            "emails": 2314,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.974503
+          }
+        ],
+        [
+          "char__enron",
+          -3.90142,
+          {
+            "emails": 2255,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.991574
+          }
+        ],
+        [
+          "char__nron",
+          -3.90135,
+          {
+            "emails": 2256,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.991578
+          }
+        ],
+        [
+          "word__vince",
+          -3.89034,
+          {
+            "emails": 804,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.983831
+          }
+        ],
+        [
+          "char__nron ",
+          -3.78895,
+          {
+            "emails": 2214,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.99187
+          }
+        ],
+        [
+          "word__thanks",
+          -3.68818,
+          {
+            "emails": 2880,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.646875
+          }
+        ],
+        [
+          "word__urltoken date",
+          -3.68331,
+          {
+            "emails": 533,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.909944
+          }
+        ],
+        [
+          "word__python",
+          -3.6147,
+          {
+            "emails": 534,
+            "top_corpus": "Mailing lists 2024",
+            "top_share": 0.891386
+          }
+        ],
+        [
+          "word__url",
+          -3.60933,
+          {
+            "emails": 1532,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.439295
+          }
+        ],
+        [
+          "char__nr",
+          -3.56471,
+          {
+            "emails": 3227,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.828014
+          }
+        ],
+        [
+          "word__enron com",
+          -3.51833,
+          {
+            "emails": 686,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 1.0
+          }
+        ],
+        [
+          "char__ th",
+          -3.47818,
+          {
+            "emails": 19182,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.340997
+          }
+        ],
+        [
+          "word__url urltoken",
+          -3.41001,
+          {
+            "emails": 1192,
+            "top_corpus": "SpamAssassin ham",
+            "top_share": 0.52349
+          }
+        ],
+        [
+          "char__ron ",
+          -3.3302,
+          {
+            "emails": 2779,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.843829
+          }
+        ],
+        [
+          "word__louise",
+          -3.23917,
+          {
+            "emails": 543,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.992634
+          }
+        ],
+        [
+          "word__that",
+          -3.14942,
+          {
+            "emails": 9931,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.35213
+          }
+        ],
+        [
+          "char__- ",
+          -3.08677,
+          {
+            "emails": 16735,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.341082
+          }
+        ],
+        [
+          "char__ -",
+          -3.08677,
+          {
+            "emails": 16735,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.341082
+          }
+        ],
+        [
+          "char__ - ",
+          -3.08677,
+          {
+            "emails": 16735,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.341082
+          }
+        ],
+        [
+          "word__713",
+          -3.01371,
+          {
+            "emails": 594,
+            "top_corpus": "Kaggle legitimate",
+            "top_share": 0.986532
+          }
+        ]
+      ]
+    }
+  },
+  "runtime_s": 709
+}
