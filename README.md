@@ -68,9 +68,53 @@ Full report: [`reports/LOCKBOX.md`](reports/LOCKBOX.md).
 - The intervals are wide because the false-alarm rates rest on only 3–22 errors.
 - PR-AUC drops the same way: 0.994–0.998 on the test mix, but 0.86–0.93 once the legitimate emails are re-weighted to 0.1% phishing. Details: [`reports/HOLDOUT_2025.md`](reports/HOLDOUT_2025.md#precision-in-a-real-inbox).
 - The lockbox row comes from its saved confusion counts. The lockbox model was not run again.
-- **The calibrated probability has the same limit:** it assumes 37% phishing, as in training.
+- **The calibrated probability has the same limit:** it assumes 37% phishing, as in training. Re-reading it at the real share is tested [below](#choosing-a-threshold-for-a-real-inbox).
 
 This text-only model would be one layer of a mail filter, not the whole filter.
+
+## Choosing a threshold for a real inbox
+
+The production threshold (0.519) maximizes F1 on the training mix, which is 37% phishing. A real inbox has much less phishing, and a missed phishing email costs more than a false alarm. The textbook fix has two steps:
+
+1. Re-read the calibrated probability at the real phishing share (prior shift).
+2. Flag an email when passing it would cost more than flagging it.
+
+This fix has no free parameter. But it assumes that only the share changes, and that phishing and legitimate mail each look the same as in training. The hold-outs come from other sources, so they test exactly that assumption. The decision rule was committed first ([protocol](reports/DECISION_POLICY_PROTOCOL.md)).
+
+Costs are in false-alarm units: a missed phishing email costs `r` false alarms. The table shows expected cost per 1,000 emails at the pre-registered primary setting, 1% phishing and `r` = 100:
+
+| | Threshold | A | B | C |
+|---|---:|---:|---:|---:|
+| **Production** | 0.519 | 23.5 | 22.8 | 74.0 |
+| Prior shift (the candidate) | 0.370 | 29.6 | 38.0 | 54.5 |
+| Prior shift + analyst review band | 0.128–0.994 | 16.5 | 22.2 | 25.3 |
+| Best threshold on the hold-out itself (optimistic) | 0.74 / 0.72 / 0.12 | 20.4 | 18.6 | 41.9 |
+
+- **The prior shift does not qualify, so production stays.**
+  - At the primary setting it lowers the threshold to 0.370 and raises the cost significantly on A (+6.0 per 1,000) and B (+15.1).
+  - On A and B every extra alert is a false alarm: 9 and 14 more legitimate emails, and not one more phishing email.
+  - Only C gains: 5 more phishing emails caught against 3 more false alarms.
+- **It works when it raises the threshold.** This happens when false alarms dominate the cost: 0.1% phishing with `r` ≤ 100, or 1% phishing with `r` ≤ 10.
+  - In those settings it lowers the cost on A and B every time, by 32–98%.
+  - On A and B it lands within 1.5 per 1,000 of each set's own best threshold.
+  - At 0.1% phishing and `r` = 100, for example, the threshold rises to 0.856 and the cost falls from 15.8 to 10.7 (A) and from 15.0 to 7.2 (B).
+  - C is the exception at that setting: its cost rises by 20% (10.9 → 13.1).
+- **It fails when it lowers the threshold into the middle of the score range.** That range does not carry over between sources.
+  - The hold-outs disagree on the best threshold: 0.74 and 0.72 on A and B, 0.12 on C.
+  - Between 0.1 and 0.6, the re-read probability is too high on A and B, where mostly legitimate mailing-list email sits, and too low on C, where mostly phishing sits.
+  - How low the threshold can safely go depends on the inbox, and a formula cannot know that.
+- **A review band helps on all three sets, but nothing ships.** In the band, an analyst looks at every email scoring between 0.128 and 0.994; a review is assumed to cost a quarter of a false alarm.
+  - Cost falls on every set, no legitimate hold-out email is blocked, and 2.6–7.1% of all mail goes to review.
+  - Not blocking any legitimate email rests on a thin margin: the highest-scoring legitimate email in A scores 0.9931.
+  - The pre-registered rule tested the band only on top of the prior shift, which did not qualify, so the band does not ship either.
+- **Changing the threshold does not fix commercial mail.**
+  - At 0.1% phishing and `r` = 100, 82.8% of English promotions are still flagged (production: 87.6%).
+  - Only the most extreme threshold (0.998) brings this down to 23%.
+  - 19.5% of English promotions score above 0.9994. The problem is in the model, not in the threshold.
+
+**What it means:** keep 0.519 as the default. An inbox that knows its phishing share can safely raise the threshold when false alarms are the main cost. Lowering it for high-stakes settings needs labeled mail from that inbox.
+
+Full tables (all 12 cost × share settings, calibration on each hold-out, risk–coverage): [`reports/DECISION_POLICY.md`](reports/DECISION_POLICY.md).
 
 ## Commercial mail: the blind spot
 
@@ -430,6 +474,7 @@ pip install -r requirements.txt
 ./run_all.sh                  # every report + the production model, same code and data (~45 min)
 python evaluate_lockbox.py    # one-time lockbox test (already run; refuses to run again)
 ./download_llm.sh && python experiments_llm.py   # LLM-written phishing test
+python experiments_decision.py   # threshold by cost and phishing share (~2 min)
 python experiments_commercial.py  # needs your own Mail export in data/raw/own_promo/ (see the protocol)
 
 python main.py samples/suspicious_sample.txt --no-dns                       # rules only
@@ -469,6 +514,7 @@ Top ML signals:
 | `experiments_headers.py` | SPF/DKIM/DMARC measurement → `reports/HEADERS.md` (private data) |
 | `experiments_tone.py` | Pre-registered tone experiment (stop words, character n-grams) → `reports/TONE.md` (private data) |
 | `experiments_llm.py` | LLM-written phishing test (Zenodo, Greco) → `reports/LLM_PHISHING.md` |
+| `experiments_decision.py` | Pre-registered decision policy: threshold by cost and phishing share, analyst review band → `reports/DECISION_POLICY.md` (commercial part needs private data) |
 | `experiments_sender_stage.py` | Pre-registered verified-sender second stage → `reports/SENDER_STAGE.md` (private data) |
 | `experiments_commercial_fix.py` | Pre-registered attempt to fix the commercial false alarms → `reports/COMMERCIAL_FIX.md` (private data) |
 | `experiments_commercial.py` | Commercial-mail test on private data → `reports/COMMERCIAL.md` (not in `run_all.sh`) |
@@ -479,7 +525,7 @@ Top ML signals:
 | `threshold_stability.py` | Compares 3 threshold rules over 5 seeds → `reports/THRESHOLD_STABILITY.md` |
 | `evaluate_lockbox.py` | One-time lockbox test → `reports/LOCKBOX.md` |
 | `run_all.sh`, `download_*.sh` | Regenerate everything; download all data |
-| `test_*.py` | 62 tests, including end-to-end CLI runs (`python -m unittest`) |
+| `test_*.py` | 67 tests, including end-to-end CLI runs (`python -m unittest`) |
 | `LICENSE`, `DATA_LICENSES.md` | Code license (MIT) and the licenses of the datasets |
 
 `reports/baseline_v1/` keeps the reports of the first ML version for comparison.

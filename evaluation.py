@@ -224,6 +224,87 @@ def format_prevalence_table(named_rows):
     return "\n".join(out)
 
 
+# ---- maliyete ve phishing payına göre karar (bkz. reports/DECISION_POLICY_PROTOCOL.md)
+# Maliyet birimi bir false alarm; r = kaçan phishing'in maliyeti / false alarm'ın maliyeti.
+
+def _odds(p):
+    return p / (1 - p)
+
+
+def shift_probability(probs, prevalence, train_share):
+    """Kalibre olasılık eğitimdeki phishing payını varsayar. Pay `prevalence` olunca aynı mailin
+    olasılığı: odds, k = odds(prevalence) / odds(train_share) ile çarpılır. Sadece payın
+    değiştiği, phishing ve meşru maillerin kendi içinde aynı kaldığı varsayımıyla doğru."""
+    p = np.clip(np.asarray(probs, dtype=float), 1e-12, 1 - 1e-12)
+    o = _odds(p) * _odds(prevalence) / _odds(train_share)
+    return o / (1 + o)
+
+
+def cost_threshold(cost_ratio, prevalence, train_share):
+    """Payı `prevalence` olan kutuda beklenen maliyeti en düşük tutan eşik, eğitim payındaki
+    olasılık üzerinde: p_d > 1 / (1 + r)  <=>  p > 1 / (1 + r·k)."""
+    k = _odds(prevalence) / _odds(train_share)
+    return 1.0 / (1.0 + cost_ratio * k)
+
+
+def review_band(cost_ratio, review_cost, prevalence, train_share):
+    """Chow kuralı: geçir (maliyet r·p_d), işaretle (1 − p_d) veya analiste gönder (c; analist
+    hep doğru bilir). İnceleme bandı c/r < p_d < 1 − c, sadece c < r/(1+r) iken var.
+    Döner: eğitim payındaki olasılık üzerinde (alt, üst), band yoksa None."""
+    r, c = cost_ratio, review_cost
+    if c >= r / (1.0 + r):
+        return None
+    lo, hi = shift_probability([c / r, 1 - c], train_share, prevalence)
+    return float(lo), float(hi)
+
+
+def policy_rates(y_true, scores, lo, hi):
+    """p >= hi işaretlenir, lo < p < hi incelemeye gider, gerisi geçer. Tek eşik: lo = hi = t.
+    fnr = geçirilen phishing (incelemeye giden phishing yakalanmış sayılır)."""
+    y = np.asarray(y_true).astype(bool)
+    p = np.asarray(scores, dtype=float)
+    flag = p >= hi
+    review = (p > lo) & ~flag
+    return {"fnr": float((~flag & ~review)[y].mean()), "fpr": float(flag[~y].mean()),
+            "review_phishing": float(review[y].mean()), "review_legit": float(review[~y].mean())}
+
+
+def expected_cost(rates, cost_ratio, prevalence, review_cost=0.0):
+    """Mail başına beklenen maliyet (false alarm biriminde), sınıf bazındaki oranlardan."""
+    pi = prevalence
+    return (pi * (cost_ratio * rates["fnr"] + review_cost * rates["review_phishing"])
+            + (1 - pi) * (rates["fpr"] + review_cost * rates["review_legit"]))
+
+
+_LOGIT_LIMIT = math.log(1e-4 / (1 - 1e-4))
+COST_GRID = 1 / (1 + np.exp(-np.linspace(_LOGIT_LIMIT, -_LOGIT_LIMIT, 2001)))
+
+
+def min_cost_threshold(y_true, scores, cost_ratio, prevalence, grid=COST_GRID):
+    """Beklenen maliyeti verinin kendisinde en düşük tutan eşik. Olasılığın değerine değil,
+    sadece sınıf bazındaki skor dağılımına güvenir. Maliyet basamaklı olduğu için en düşük
+    maliyet çoğu zaman bir aralık: en uzun aralığın ortası (grid logit'te eşit aralıklı).
+    Döner: (eşik, o eşikteki maliyet)."""
+    y = np.asarray(y_true).astype(bool)
+    p = np.asarray(scores, dtype=float)
+    pos = np.sort(p[y])
+    neg = np.sort(p[~y])
+    fnr = np.searchsorted(pos, grid, side="left") / len(pos)
+    fpr = 1 - np.searchsorted(neg, grid, side="left") / len(neg)
+    cost = prevalence * cost_ratio * fnr + (1 - prevalence) * fpr
+    best = np.isclose(cost, cost.min(), rtol=1e-9, atol=1e-15)
+    run_start, best_run = None, (0, 0)
+    for i, b in enumerate(np.append(best, False)):
+        if b and run_start is None:
+            run_start = i
+        elif not b and run_start is not None:
+            if i - run_start > best_run[1] - best_run[0]:
+                best_run = (run_start, i)
+            run_start = None
+    mid = (best_run[0] + best_run[1] - 1) // 2
+    return float(grid[mid]), float(cost[mid])
+
+
 def format_table(rows, columns):
     """rows: [(name, metrics_dict)] -> markdown tablo."""
     out = ["| model | " + " | ".join(columns) + " |"]

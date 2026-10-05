@@ -511,5 +511,66 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(m["recall"], 0.5)
 
 
+@unittest.skipUnless(HAS_SKLEARN, "scikit-learn not installed")
+class TestDecisionPolicy(unittest.TestCase):
+    def test_cost_threshold(self):
+        from evaluation import cost_threshold
+        # aynı payda ve eşit maliyette Bayes eşiği 0.5
+        self.assertAlmostEqual(cost_threshold(1, 0.3727, 0.3727), 0.5)
+        # protokoldeki tablo
+        self.assertAlmostEqual(cost_threshold(100, 0.01, 0.3727), 0.3704, places=4)
+        self.assertAlmostEqual(cost_threshold(100, 0.001, 0.3727), 0.8558, places=4)
+
+    def test_shift_probability_round_trip(self):
+        import numpy as np
+        from evaluation import cost_threshold, shift_probability
+        p = np.array([0.01, 0.37, 0.9, 0.999])
+        back = shift_probability(shift_probability(p, 0.01, 0.3727), 0.3727, 0.01)
+        np.testing.assert_allclose(back, p, rtol=1e-9)
+        # p = 0.9, %1 payda yaklaşık %13
+        self.assertAlmostEqual(float(shift_probability([0.9], 0.01, 0.3727)[0]), 0.133, places=3)
+        # eşikteki mail o payda tam 1/(1+r) olasılıkta
+        t = cost_threshold(100, 0.01, 0.3727)
+        self.assertAlmostEqual(float(shift_probability([t], 0.01, 0.3727)[0]), 1 / 101)
+
+    def test_review_band(self):
+        from evaluation import cost_threshold, review_band
+        # aynı payda band doğrudan c/r .. 1 - c
+        lo, hi = review_band(100, 0.25, 0.3727, 0.3727)
+        self.assertAlmostEqual(lo, 0.0025)
+        self.assertAlmostEqual(hi, 0.75)
+        # band tek eşiği içine alır, inceleme pahalıysa band yok
+        lo, hi = review_band(100, 0.25, 0.01, 0.3727)
+        self.assertTrue(lo < cost_threshold(100, 0.01, 0.3727) < hi)
+        self.assertIsNone(review_band(100, 100 / 101, 0.01, 0.3727))
+        self.assertIsNone(review_band(1, 0.5, 0.01, 0.3727))
+
+    def test_policy_rates_and_cost(self):
+        from evaluation import expected_cost, policy_rates
+        y = [1, 1, 1, 1, 0, 0, 0, 0]
+        p = [0.9, 0.6, 0.4, 0.1, 0.7, 0.3, 0.2, 0.05]
+        one = policy_rates(y, p, 0.5, 0.5)
+        self.assertEqual((one["fnr"], one["fpr"], one["review_phishing"]), (0.5, 0.25, 0.0))
+        band = policy_rates(y, p, 0.25, 0.8)
+        # 0.6 ve 0.4 incelemede yakalanır, sadece 0.1 kaçar; 0.7 ve 0.3 incelemeye gider
+        self.assertEqual(band["fnr"], 0.25)
+        self.assertEqual(band["fpr"], 0.0)
+        self.assertEqual(band["review_phishing"], 0.5)
+        self.assertEqual(band["review_legit"], 0.5)
+        self.assertAlmostEqual(expected_cost(band, 10, 0.5, 0.2), 0.5 * (2.5 + 0.1) + 0.5 * 0.1)
+
+    def test_min_cost_threshold(self):
+        from evaluation import min_cost_threshold
+        y = [0, 0, 0, 1, 1, 1]
+        p = [0.1, 0.2, 0.3, 0.6, 0.7, 0.9]
+        t, cost = min_cost_threshold(y, p, 1, 0.5)
+        self.assertEqual(cost, 0.0)
+        # sıfır maliyetli aralık 0.3 < t <= 0.6; en uzun koşunun ortası arada kalır
+        self.assertTrue(0.3 < t <= 0.6)
+        # kaçan phishing çok pahalıysa en düşük phishing'i de yakalayacak kadar iner
+        t, _ = min_cost_threshold([0, 0, 1, 1], [0.2, 0.5, 0.4, 0.9], 1000, 0.5)
+        self.assertTrue(0.2 < t <= 0.4)
+
+
 if __name__ == "__main__":
     unittest.main()
