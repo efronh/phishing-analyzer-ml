@@ -512,6 +512,72 @@ class TestEvaluation(unittest.TestCase):
 
 
 @unittest.skipUnless(HAS_SKLEARN, "scikit-learn not installed")
+class TestShortcutCleaning(unittest.TestCase):
+    SAMPLE = "Subject: Verify your account\n\nYour mailbox is full. Log in at http://mail-check.tk/login today."
+
+    def clean(self, text):
+        from ml_model import clean_texts
+        return clean_texts([text])[0]
+
+    def test_targeted_templates_vanish(self):
+        from experiments_shortcuts import TARGETED, TEMPLATES
+        for name in TARGETED:
+            self.assertEqual(self.clean(self.SAMPLE + TEMPLATES[name]), self.clean(self.SAMPLE), name)
+
+    def test_outlook_template_keeps_benign_text(self):
+        from experiments_shortcuts import BENIGN, TEMPLATES
+        out = self.clean(self.SAMPLE + TEMPLATES["T4"])
+        self.assertIn(BENIGN, out)
+        for gone in ("Original Message", "From: Laura", "Sent:", "To: Accounts", "Q1 budget"):
+            self.assertNotIn(gone, out)
+
+    def test_untargeted_templates_stay(self):
+        from experiments_shortcuts import BENIGN, TEMPLATES
+        self.assertIn(BENIGN, self.clean(self.SAMPLE + TEMPLATES["T5"]))
+        self.assertIn("Thanks,\nLaura", self.clean(self.SAMPLE + TEMPLATES["T6"]))
+
+    def test_fully_quoted_mail_keeps_quoted_text(self):
+        out = self.clean("Subject: Fwd: Invoice\n\n> Please verify your account at http://x.tk/a\n> now")
+        self.assertTrue(out.startswith("Subject: Invoice"))
+        self.assertIn("Please verify your account", out)
+        self.assertNotIn(">", out)
+
+    def test_inline_forward_separator_and_dates(self):
+        from ml_model import mask_dates, strip_reply_structure
+        kaggle = ("re : gas - - - - - - forwarded by vince j kaminski / hou / ect on 01 / 04 / 2000 08 : 31 am"
+                  " - - - - - - please see attached")
+        out = mask_dates(strip_reply_structure(kaggle))
+        self.assertTrue(out.startswith("gas"))
+        self.assertNotIn("vince", out)
+        self.assertIn("please see attached", out)
+        dates = mask_dates("on 12/16/01 and 2025-03-01, in 2005; call 713 - 830 - 8659, kernel 2.6.32")
+        self.assertEqual(dates.count("datetoken"), 2)
+        self.assertEqual(dates.count("yeartoken"), 1)
+        self.assertIn("713 - 830 - 8659", dates)
+        self.assertIn("2.6.32", dates)
+
+    def test_header_runs_but_not_first_line(self):
+        out = self.clean("Subject: hello\nFrom: a\nbody\nFrom: b\nTo: c\nSubject: d\nmore")
+        self.assertEqual(out, "Subject: hello\nFrom: a\nbody\nmore")
+
+    def test_format_normalization(self):
+        from ml_model import preprocess_normalized
+        self.assertEqual(preprocess_normalized("Hello, <b>World</b>&nbsp;> quoted"), "hello , world quoted")
+        self.assertEqual(preprocess_normalized("ricky a . archer"), preprocess_normalized("Ricky A. Archer"))
+
+    def test_pipeline_with_cleaning(self):
+        from ml_model import PhishingClassifier, build_pipeline
+        with self.assertRaises(ValueError):
+            build_pipeline(clean=("typo",))
+        y = [1] * len(PHISH) + [0] * len(LEGIT)
+        model = PhishingClassifier(build_pipeline(feature_version=3, clean=("reply", "dates", "format")))
+        model.fit(PHISH + LEGIT, y)
+        quoted = PHISH[0] + "\n\nOn Mon, Mar 3, 2025 Daniel wrote:\n> Thanks, see you at the meeting."
+        self.assertAlmostEqual(float(model.predict_proba([quoted])[0]), float(model.predict_proba([PHISH[0]])[0]))
+        self.assertIsInstance(model.explain(quoted), list)
+
+
+@unittest.skipUnless(HAS_SKLEARN, "scikit-learn not installed")
 class TestDecisionPolicy(unittest.TestCase):
     def test_cost_threshold(self):
         from evaluation import cost_threshold

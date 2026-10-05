@@ -48,6 +48,87 @@ def preprocess(text):
     return SUBJECT_LABEL_RE.sub(" ", normalize_text(text)).lower()
 
 
+# ---- kaynak kısayollarını kaldırma (bkz. reports/SHORTCUTS_PROTOCOL.md)
+# Meşru eğitim maillerinin yarısı alıntı/yanıt yapısı taşıyor, phishing'in neredeyse hiçbiri:
+# model "yanıt = meşru" öğrenmişti; 3 satırlık sahte alıntı recall'u %99'dan %73'e indiriyordu.
+_QUOTE_LINE_RE = re.compile(r"^\s*>")
+_WROTE_RE = re.compile(r"wrote:\s*$", re.IGNORECASE)
+# hem satır olarak hem de Kaggle'ın satır sonları silinmiş metninde ("- - - forwarded by ...")
+_SEPARATOR_RE = re.compile(r"(?:-\s*){3,}(?:original message|forwarded message|forwarded by[^-\n]*)\s*(?:-\s*){2,}",
+                           re.IGNORECASE)
+_HEADER_LINE_RE = re.compile(r"^\s*(?:from|sent|to|cc|date|subject)\s*:", re.IGNORECASE)
+_REPLY_PREFIX_RE = re.compile(r"^(\s*(?:subject\s*:)?\s*)(?:(?:re|fwd?)\s*:\s*)+", re.IGNORECASE)
+# yıl ve tarih: toplanma dönemi sınıfla örtüşüyor (2002 meşru, 2004-2005 phishing)
+_ISO_DATE_RE = re.compile(r"\b(?:19|20)\d{2}\s*-\s*\d{1,2}\s*-\s*\d{1,2}\b")
+_NUM_DATE_RE = re.compile(r"\b\d{1,2}\s*[/-]\s*\d{1,2}\s*[/-]\s*(?:\d{4}|\d{2})\b")
+_YEAR_RE = re.compile(r"\b(?:19[5-9]\d|20[0-4]\d)\b")
+
+
+def strip_reply_structure(text):
+    """Alıntı satırları (>), "... wrote:" satırları, ayraçlar ("Original Message", "Forwarded by"),
+    2+ ardışık başlık satırı ve konudaki Re:/Fwd: önekleri silinir; ayraçların altındaki metin
+    kalır (iletilen mailin kendisi olabilir). Gövdeden hiçbir şey kalmazsa ("Subject:" ile
+    başlayan ilk satır gövde sayılmaz) alıntı işaretleri silinip alıntılanan metin tutulur."""
+    lines = _SEPARATOR_RE.sub(" ", text).split("\n")
+    lines[0] = _REPLY_PREFIX_RE.sub(r"\1", lines[0])
+    drop = [False] * len(lines)
+    for i, line in enumerate(lines):
+        if _QUOTE_LINE_RE.match(line):
+            drop[i] = True
+        elif len(line) <= 300 and _WROTE_RE.search(line):
+            drop[i] = True
+            if i > 0 and lines[i - 1].lstrip().startswith("On "):
+                drop[i - 1] = True
+    i = 1  # ilk satır (mailin kendi konusu) hiç silinmez
+    while i < len(lines):
+        j = i
+        while j < len(lines) and _HEADER_LINE_RE.match(lines[j]):
+            j = j + 1
+        if j - i >= 2:
+            for k in range(i, j):
+                drop[k] = True
+        i = max(j, i + 1)
+    kept = [line for line, d in zip(lines, drop) if not d]
+    body = kept[1:] if SUBJECT_LABEL_RE.match(lines[0].lstrip()) else kept
+    if "".join(body).strip() == "":
+        kept = [lines[0]] + [re.sub(r"^\s*(?:>\s*)+", "", line) for line in lines[1:]]
+    # sondaki boşluk: silinen satırlar boş satır bırakmasın (kısa gövde feature'ını etkilemesin)
+    return "\n".join(kept).rstrip()
+
+
+def mask_dates(text):
+    text = _ISO_DATE_RE.sub(" datetoken ", text)
+    text = _NUM_DATE_RE.sub(" datetoken ", text)
+    return _YEAR_RE.sub(" yeartoken ", text)
+
+
+def clean_texts(texts, reply=True, dates=True):
+    """Bütün feature'lardan önce (kelime, karakter, kural), eğitimde ve CLI'da aynı."""
+    out = []
+    for text in texts:
+        if reply:
+            text = strip_reply_structure(text)
+        if dates:
+            text = mask_dates(text)
+        out.append(text)
+    return out
+
+
+_TAG_RE = re.compile(r"<[^<>]{0,500}>")
+_ENTITY_RE = re.compile(r"&(?:[a-z]+|#\d+);", re.IGNORECASE)
+_PUNCT_RE = re.compile(r"([^\w\s])")
+
+
+def preprocess_normalized(text):
+    """Sadece TF-IDF için: Kaggle'ın meşru mailleri küçük harfli, satır sonsuz ve noktalaması
+    boşluklu ("a . archer"); diğer kaynaklar ham. Her kaynağı aynı biçime getiriyoruz ki format
+    tek başına kaynağı ele vermesin. Kural feature'ları ham metni görmeye devam ediyor."""
+    text = _TAG_RE.sub(" ", normalize_text(text))
+    text = _ENTITY_RE.sub(" ", text)
+    text = SUBJECT_LABEL_RE.sub(" ", text).replace("<", " ").replace(">", " ")
+    return " ".join(_PUNCT_RE.sub(r" \1 ", text).split()).lower()
+
+
 class RuleFeatures(BaseEstimator, TransformerMixin):
     # version=1 eski (sınırsız) feature'lar - sadece karşılaştırma için
     def __init__(self, version=2):
@@ -91,10 +172,16 @@ def _make_classifier(name, C=DEFAULT_C):
 
 def build_pipeline(classifier="logreg", use_text=True, use_rules=True, feature_version=2,
                    C=DEFAULT_C, max_features=DEFAULT_MAX_FEATURES, char_ngram=DEFAULT_CHAR_NGRAM,
-                   stop_words=None, use_char=True):
+                   stop_words=None, use_char=True, clean=()):
     """use_text / use_rules ile ablation yapılabiliyor (hangi feature grubu ne katıyor).
     stop_words="english" / use_char=False: "ton" deneyi için (experiments_tone.py); varsayılanlar
-    üretim modelinin ayarı."""
+    üretim modelinin ayarı. clean: {"reply", "dates", "format"} alt kümesi, kaynak kısayollarını
+    kaldırma deneyi için (experiments_shortcuts.py)."""
+    clean = tuple(clean)
+    unknown = set(clean) - {"reply", "dates", "format"}
+    if unknown:
+        raise ValueError("unknown clean step: " + ", ".join(sorted(unknown)))
+    text_preprocessor = preprocess_normalized if "format" in clean else preprocess
     if not use_text and not use_rules:
         raise ValueError("need at least one feature group")
     if classifier == "nb" and use_rules:
@@ -104,7 +191,7 @@ def build_pipeline(classifier="logreg", use_text=True, use_rules=True, feature_v
     parts = []
     if use_text:
         parts.append(("word", TfidfVectorizer(
-            preprocessor=preprocess,
+            preprocessor=text_preprocessor,
             ngram_range=(1, 2),
             min_df=2,
             max_df=0.95,
@@ -114,7 +201,7 @@ def build_pipeline(classifier="logreg", use_text=True, use_rules=True, feature_v
         )))
     if use_text and use_char:
         parts.append(("char", TfidfVectorizer(
-            preprocessor=preprocess,
+            preprocessor=text_preprocessor,
             analyzer="char_wb",
             ngram_range=tuple(char_ngram),
             min_df=3,
@@ -128,7 +215,11 @@ def build_pipeline(classifier="logreg", use_text=True, use_rules=True, feature_v
         parts.append(("rules", Pipeline(steps)))
 
     clf = _make_classifier(classifier, C) if classifier == "logreg" else _make_classifier(classifier)
-    return Pipeline([("features", FeatureUnion(parts)), ("clf", clf)])
+    steps = [("features", FeatureUnion(parts)), ("clf", clf)]
+    if "reply" in clean or "dates" in clean:
+        steps.insert(0, ("clean", FunctionTransformer(
+            clean_texts, kw_args={"reply": "reply" in clean, "dates": "dates" in clean})))
+    return Pipeline(steps)
 
 
 def pipeline_scores(pipeline, texts):
@@ -196,6 +287,9 @@ class PhishingClassifier:
     def explain(self, text, top_k=5):
         """Bu mailde phishing yönüne en çok iten feature'lar (coef * değer)."""
         union, coef, names = self._linear_parts()
+        # temizleme adımı varsa açıklama da modelin gördüğü metinden yapılır
+        if "clean" in self.pipeline.named_steps:
+            text = self.pipeline.named_steps["clean"].transform([text])[0]
         x = union.transform([text])
         row = x.toarray()[0] if hasattr(x, "toarray") else np.asarray(x)[0]
         contrib = row * coef
